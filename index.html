@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090d17">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>RECONNECT OS</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon-192.png">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="stage">
+    <section id="phone" class="phone" aria-label="RECONNECT OS">
+      <div id="statusbar" class="statusbar">
+        <span id="clock">23:48</span>
+        <div class="status-icons"><span>●●●</span><span>⌁</span><span>83%</span></div>
+      </div>
+
+      <!-- LOCK SCREEN -->
+      <section id="lockScreen" class="screen lock-screen active">
+        <div class="lock-content">
+          <div class="lock-time" id="lockTime">23:48</div>
+          <div class="lock-date">Minggu, 28 September</div>
+
+          <div class="lock-notifications">
+            <article class="lock-notif">
+              <div class="app-badge msg">M</div>
+              <div>
+                <b>Messages</b>
+                <p>Malachi: "Jangan lupa cek catatan sebelum tidur."</p>
+              </div>
+            </article>
+            <article class="lock-notif">
+              <div class="app-badge game">G</div>
+              <div>
+                <b>DAILY QUEST</b>
+                <p>Reward berakhir dalam 12 menit.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <button id="unlockBtn" class="swipe-button" type="button">
+          <span>⌃</span>
+          Geser pikiranmu, bukan layarnya — tap untuk unlock
+        </button>
+      </section>
+
+      <!-- HOME -->
+      <section id="homeScreen" class="screen home-screen">
+        <div class="mission-widget">
+          <small>MIDNIGHT LOCK</small>
+          <strong id="countdown">12:00</strong>
+          <span>Temukan 4 fragmen sebelum waktu habis.</span>
+        </div>
+
+        <div class="app-grid">
+          <button class="app-icon" data-app="messages">
+            <span class="icon-box i-message">💬</span><span>Messages</span>
+            <em class="badge">3</em>
+          </button>
+          <button class="app-icon" data-app="notes">
+            <span class="icon-box i-notes">📝</span><span>Notes</span>
+          </button>
+          <button class="app-icon" data-app="gallery">
+            <span class="icon-box i-gallery">▦</span><span>Gallery</span>
+          </button>
+          <button class="app-icon" data-app="browser">
+            <span class="icon-box i-browser">◎</span><span>Browser</span>
+          </button>
+          <button class="app-icon" data-app="bible">
+            <span class="icon-box i-bible">✝</span><span>Bible</span>
+          </button>
+          <button class="app-icon" data-app="arcade">
+            <span class="icon-box i-game">◈</span><span>Arcade</span>
+          </button>
+          <button class="app-icon" data-app="files">
+            <span class="icon-box i-files">▱</span><span>Files</span>
+          </button>
+          <button class="app-icon" data-app="settings">
+            <span class="icon-box i-settings">⚙</span><span>Settings</span>
+          </button>
+        </div>
+
+        <div class="dock">
+          <button class="dock-icon" data-app="messages">💬</button>
+          <button class="dock-icon" data-app="browser">◎</button>
+          <button class="dock-icon" data-app="bible">✝</button>
+          <button class="dock-icon" data-app="files">▱</button>
+        </div>
+      </section>
+
+      <!-- APP WINDOW -->
+      <section id="appScreen" class="screen app-screen">
+        <header class="app-header">
+          <button id="backHome" class="nav-btn" type="button">‹</button>
+          <div>
+            <small id="appEyebrow">RECONNECT OS</small>
+            <h1 id="appTitle">App</h1>
+          </div>
+          <button id="hintBtn" class="nav-btn" type="button">?</button>
+        </header>
+
+        <div id="appContent" class="app-content"></div>
+      </section>
+
+      <!-- FINAL -->
+      <section id="finalScreen" class="screen final-screen">
+        <div class="final-card">
+          <span class="final-logo">↻</span>
+          <small>CONNECTION STATUS</small>
+          <h2>Final Lock</h2>
+          <p>Masukkan password dari semua fragmen yang kalian temukan.</p>
+          <div id="fragmentSlots" class="fragment-slots"></div>
+          <input id="finalCode" type="text" autocomplete="off" placeholder="PASSWORD">
+          <button id="submitFinal" class="primary-btn" type="button">RECONNECT</button>
+          <p id="finalFeedback" class="feedback"></p>
+        </div>
+      </section>
+
+      <!-- WIN -->
+      <section id="winScreen" class="screen win-screen">
+        <div class="win-symbol">✓</div>
+        <small>CONNECTION RESTORED</small>
+        <h2>KEMBALI.</h2>
+        <p>Teknologi bukan musuh. Masalahnya muncul saat perhatian kita terus ditarik sampai kita lupa siapa yang seharusnya menjadi prioritas.</p>
+        <p class="verse">“Ia menyadari keadaannya ... lalu ia bangkit dan pergi kepada bapanya.”<br><b>Lukas 15:17–20</b></p>
+        <button id="restartBtn" class="secondary-btn" type="button">Main ulang</button>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
