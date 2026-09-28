@@ -250,10 +250,65 @@
     showScreen("finalScreen");
   }
 
-  $("#unlockBtn").addEventListener("click",()=>{
-    showScreen("homeScreen");
-    startTimer();
-  });
+  const unlockBtn = $("#unlockBtn");
+
+let swipeStartY = 0;
+let swipeDistance = 0;
+let swiping = false;
+
+unlockBtn.style.touchAction = "none";
+
+unlockBtn.addEventListener("pointerdown", (e) => {
+  swiping = true;
+  swipeStartY = e.clientY;
+  swipeDistance = 0;
+
+  unlockBtn.style.transition = "none";
+
+  if (unlockBtn.setPointerCapture) {
+    unlockBtn.setPointerCapture(e.pointerId);
+  }
+});
+
+unlockBtn.addEventListener("pointermove", (e) => {
+  if (!swiping) return;
+
+  swipeDistance = Math.max(0, swipeStartY - e.clientY);
+
+  const move = Math.min(swipeDistance, 120);
+
+  unlockBtn.style.transform = `translateY(-${move}px)`;
+  unlockBtn.style.opacity = Math.max(0.35, 1 - move / 180);
+});
+
+function endSwipe() {
+  if (!swiping) return;
+
+  swiping = false;
+
+  if (swipeDistance >= 75) {
+    unlockBtn.style.transition =
+      "transform .2s ease, opacity .2s ease";
+
+    unlockBtn.style.transform = "translateY(-150px)";
+    unlockBtn.style.opacity = "0";
+
+    setTimeout(() => {
+      showScreen("homeScreen");
+      startTimer();
+    }, 180);
+
+  } else {
+    unlockBtn.style.transition =
+      "transform .2s ease, opacity .2s ease";
+
+    unlockBtn.style.transform = "translateY(0)";
+    unlockBtn.style.opacity = "1";
+  }
+}
+
+unlockBtn.addEventListener("pointerup", endSwipe);
+unlockBtn.addEventListener("pointercancel", endSwipe);
   $("#backHome").addEventListener("click",()=>showScreen("homeScreen"));
   document.querySelectorAll("[data-app]").forEach(b=>b.addEventListener("click",()=>openApp(b.dataset.app)));
   $("#hintBtn").addEventListener("click",()=>{
