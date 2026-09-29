@@ -159,3 +159,53 @@ body{min-height:100vh}
 @media(prefers-reduced-motion:reduce){
   *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
 }
+.objective-bar{
+  display:grid;
+  grid-template-columns:42px 1fr 24px;
+  gap:10px;
+  align-items:center;
+
+  margin:6px 0 16px;
+  padding:10px 12px;
+
+  border-radius:14px;
+
+  background:rgba(8,13,24,.82);
+  border:1px solid rgba(255,255,255,.10);
+
+  backdrop-filter:blur(14px);
+}
+
+.objective-diamond{
+  width:34px;
+  height:34px;
+
+  display:grid;
+  place-items:center;
+
+  color:#a9bbff;
+  font-size:22px;
+}
+
+.objective-text{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.objective-text small{
+  font-size:9px;
+  letter-spacing:.15em;
+  color:#7f91b8;
+}
+
+.objective-text span{
+  font-size:12px;
+  line-height:1.35;
+  color:#edf2ff;
+}
+
+.objective-arrow{
+  color:#8090ad;
+  font-size:22px;
+}
