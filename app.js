@@ -250,35 +250,34 @@
     showScreen("finalScreen");
   }
 
-  const unlockBtn = $("#unlockBtn");
+  const lockScreen = $("#lockScreen");
 
 let swipeStartY = 0;
 let swipeDistance = 0;
 let swiping = false;
 
-unlockBtn.style.touchAction = "none";
+lockScreen.style.touchAction = "none";
 
-unlockBtn.addEventListener("pointerdown", (e) => {
+lockScreen.addEventListener("pointerdown", (e) => {
   swiping = true;
   swipeStartY = e.clientY;
   swipeDistance = 0;
 
-  unlockBtn.style.transition = "none";
+  lockScreen.style.transition = "none";
 
-  if (unlockBtn.setPointerCapture) {
-    unlockBtn.setPointerCapture(e.pointerId);
+  if (lockScreen.setPointerCapture) {
+    lockScreen.setPointerCapture(e.pointerId);
   }
 });
 
-unlockBtn.addEventListener("pointermove", (e) => {
+lockScreen.addEventListener("pointermove", (e) => {
   if (!swiping) return;
 
   swipeDistance = Math.max(0, swipeStartY - e.clientY);
 
-  const move = Math.min(swipeDistance, 120);
+  const move = Math.min(swipeDistance, 220);
 
-  unlockBtn.style.transform = `translateY(-${move}px)`;
-  unlockBtn.style.opacity = Math.max(0.35, 1 - move / 180);
+  lockScreen.style.transform = `translateY(-${move}px)`;
 });
 
 function endSwipe() {
@@ -286,29 +285,24 @@ function endSwipe() {
 
   swiping = false;
 
-  if (swipeDistance >= 75) {
-    unlockBtn.style.transition =
-      "transform .2s ease, opacity .2s ease";
-
-    unlockBtn.style.transform = "translateY(-150px)";
-    unlockBtn.style.opacity = "0";
+  if (swipeDistance >= 100) {
+    lockScreen.style.transition = "transform .28s ease";
+    lockScreen.style.transform = "translateY(-100%)";
 
     setTimeout(() => {
+      lockScreen.style.transform = "";
       showScreen("homeScreen");
       startTimer();
-    }, 180);
+    }, 280);
 
   } else {
-    unlockBtn.style.transition =
-      "transform .2s ease, opacity .2s ease";
-
-    unlockBtn.style.transform = "translateY(0)";
-    unlockBtn.style.opacity = "1";
+    lockScreen.style.transition = "transform .22s ease";
+    lockScreen.style.transform = "translateY(0)";
   }
 }
 
-unlockBtn.addEventListener("pointerup", endSwipe);
-unlockBtn.addEventListener("pointercancel", endSwipe);
+lockScreen.addEventListener("pointerup", endSwipe);
+lockScreen.addEventListener("pointercancel", endSwipe);
   $("#backHome").addEventListener("click",()=>showScreen("homeScreen"));
   document.querySelectorAll("[data-app]").forEach(b=>b.addEventListener("click",()=>openApp(b.dataset.app)));
   $("#hintBtn").addEventListener("click",()=>{
