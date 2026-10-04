@@ -1,360 +1,1448 @@
 (() => {
-  const $ = (s) => document.querySelector(s);
-  const screens = ["lockScreen","homeScreen","appScreen","finalScreen","winScreen"];
+  const $ = (selector, root = document) =>
+    root.querySelector(selector);
+
+  const $$ = (selector, root = document) =>
+    [...root.querySelectorAll(selector)];
+
+  const screens = [
+    "lockScreen",
+    "homeScreen",
+    "appScreen",
+    "finalScreen",
+    "winScreen"
+  ];
+
+  const GAME_START_TIME = (23 * 3600) + (48 * 60);
+  const TIMER_LENGTH = 12 * 60;
+
   const state = {
-    seconds:720,
-    timer:null,
-    fragments:{},
-    opened:{},
-    hints:3,
-    galleryUnlocked:false,
-    notesUnlocked:false
+    unlockedAt: null,
+    gameTicker: null,
+    timerExpiredNotified: false,
+
+    fragments: {},
+
+    feedIndex: 0,
+    feedLetters: []
   };
 
-  const apps = {
-    messages:{title:"Messages",render:renderMessages},
-    notes:{title:"Notes",render:renderNotes},
-    gallery:{title:"Gallery",render:renderGallery},
-    browser:{title:"Browser",render:renderBrowser},
-    bible:{title:"Bible",render:renderBible},
-    arcade:{title:"Arcade",render:renderArcade},
-    files:{title:"Files",render:renderFiles},
-    settings:{title:"Settings",render:renderSettings},
-    clock:{
-  title:"Clock",
-  render(root){
-    root.innerHTML = `
-      <div style="display:flex;gap:8px;margin-bottom:16px">
-        <button class="primary-btn" type="button">Jam</button>
-        <button class="secondary-btn" type="button">Timer</button>
-      </div>
 
-      <div style="text-align:center;padding:40px 0">
-        <div style="font-size:42px;font-weight:300">23:48:00</div>
-        <div style="color:#9aa1ab;margin-top:8px">Sabtu</div>
-      </div>
-    `;
-  }
-},
-  };
+  /* =========================================================
+     BASIC UI
+  ========================================================= */
 
-  function showScreen(id){
-    screens.forEach(s => $("#"+s).classList.toggle("active",s===id));
-  }
-  function toast(msg){
-    const t=$("#toast");t.textContent=msg;t.classList.add("show");
-    setTimeout(()=>t.classList.remove("show"),2200);
-  }
-  function fmt(sec){
-    const m=Math.floor(Math.max(sec,0)/60),s=Math.max(sec,0)%60;
-    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-  }
-  function startTimer(){
-    clearInterval(state.timer);
-    state.timer=setInterval(()=>{
-      state.seconds--;
-      $("#countdown").textContent=fmt(state.seconds);
-      if(state.seconds<=0){
-        clearInterval(state.timer);
-        toast("MIDNIGHT LOCK — waktu habis, tapi game tetap bisa diselesaikan.");
+  function showScreen(id) {
+    screens.forEach(screenId => {
+      const screen = $("#" + screenId);
+
+      if (screen) {
+        screen.classList.toggle(
+          "active",
+          screenId === id
+        );
       }
-    },1000);
+    });
   }
-  function addFragment(key,value){
-    if(!state.fragments[key]){
-      state.fragments[key]=value;
-      toast(`Fragmen ditemukan: ${value}`);
-      if(Object.keys(state.fragments).length===4){
-        setTimeout(openFinal,900);
-      }
+
+
+  function toast(message) {
+    const toastBox = $("#toast");
+
+    if (!toastBox) return;
+
+    toastBox.textContent = message;
+    toastBox.classList.add("show");
+
+    setTimeout(() => {
+      toastBox.classList.remove("show");
+    }, 2200);
+  }
+
+
+  /* =========================================================
+     TIME SYSTEM
+  ========================================================= */
+
+  function getElapsedSeconds() {
+    if (!state.unlockedAt) {
+      return 0;
+    }
+
+    return Math.floor(
+      (Date.now() - state.unlockedAt) / 1000
+    );
+  }
+
+
+  function formatClock(totalSeconds) {
+    totalSeconds =
+      ((totalSeconds % 86400) + 86400) % 86400;
+
+    const h = Math.floor(totalSeconds / 3600);
+
+    const m = Math.floor(
+      (totalSeconds % 3600) / 60
+    );
+
+    const s = totalSeconds % 60;
+
+    return {
+      h: String(h).padStart(2, "0"),
+      m: String(m).padStart(2, "0"),
+      s: String(s).padStart(2, "0")
+    };
+  }
+
+
+  function formatCountdown(totalSeconds) {
+    totalSeconds = Math.max(0, totalSeconds);
+
+    const h = Math.floor(totalSeconds / 3600);
+
+    const m = Math.floor(
+      (totalSeconds % 3600) / 60
+    );
+
+    const s = totalSeconds % 60;
+
+    return (
+      `${String(h).padStart(2, "0")}:` +
+      `${String(m).padStart(2, "0")}:` +
+      `${String(s).padStart(2, "0")}`
+    );
+  }
+
+
+  function updateTimeUI() {
+    const elapsed = getElapsedSeconds();
+
+    const normalTime =
+      GAME_START_TIME + elapsed;
+
+    const normal =
+      formatClock(normalTime);
+
+
+    /* status bar */
+
+    const statusClock = $("#clock");
+
+    if (statusClock) {
+      statusClock.textContent =
+        `${normal.h}:${normal.m}`;
+    }
+
+
+    /* lock screen */
+
+    const lockTime = $("#lockTime");
+
+    if (lockTime && !state.unlockedAt) {
+      lockTime.textContent = "23:48";
+    }
+
+
+    /* Clock app */
+
+    const normalClock =
+      $("#normalClock");
+
+    if (normalClock) {
+      normalClock.textContent =
+        `${normal.h}:${normal.m}:${normal.s}`;
+    }
+
+
+    const remaining =
+      Math.max(
+        0,
+        TIMER_LENGTH - elapsed
+      );
+
+
+    const countdownClock =
+      $("#countdownClock");
+
+    if (countdownClock) {
+      countdownClock.textContent =
+        formatCountdown(remaining);
+    }
+
+
+    /* timer finished */
+
+    if (
+      state.unlockedAt &&
+      remaining === 0 &&
+      !state.timerExpiredNotified
+    ) {
+      state.timerExpiredNotified = true;
+
+      toast(
+        "00:00:00 — Waktu yang direncanakan sudah habis."
+      );
     }
   }
-  function openApp(name){
-    const app=apps[name]; if(!app)return;
-    $("#appTitle").textContent=app.title;
-    $("#appContent").innerHTML="";
-    app.render($("#appContent"));
-    showScreen("appScreen");
-  }
-  function el(tag,cls,html){
-    const n=document.createElement(tag);
-    if(cls)n.className=cls;
-    if(html!==undefined)n.innerHTML=html;
-    return n;
+
+
+  function startGameClock() {
+    if (!state.unlockedAt) {
+      state.unlockedAt = Date.now();
+    }
+
+    updateTimeUI();
+
+    if (state.gameTicker) {
+      clearInterval(state.gameTicker);
+    }
+
+    state.gameTicker =
+      setInterval(
+        updateTimeUI,
+        250
+      );
   }
 
-  function renderMessages(root){
-    const chat=el("div","chat");
-    [
-      ["them","Malachi","Udah siap? Besok kelompok kita presentasi."],
-      ["me","Kamu","Iya. Lagi beresin semuanya."],
-      ["them","Malachi","Btw Felizio bilang dia nyimpen clue di foto yang diambil jam 19:32."],
-      ["them","Malachi","Katanya nama filenya aneh: IMG_1511."],
-      ["me","Kamu","1511?"],
-      ["them","Malachi","Mungkin bukan random."]
-    ].forEach(([who,name,text])=>{
-      const b=el("div","bubble "+who,`<b>${name}</b><br>${text}`);
-      chat.appendChild(b);
-    });
+
+
+  /* =========================================================
+     APPS
+  ========================================================= */
+
+  const apps = {
+
+    messages: {
+      title: "Messages",
+      render: renderMessages
+    },
+
+    notes: {
+      title: "Notes",
+      render: renderNotes
+    },
+
+    gallery: {
+      title: "Gallery",
+      render: renderGallery
+    },
+
+    clock: {
+      title: "Clock",
+      render: renderClockApp
+    },
+
+    browser: {
+      title: "Browser",
+      render: renderBrowser
+    },
+
+    bible: {
+      title: "Bible",
+      render: renderBible
+    },
+
+    arcade: {
+      title: "Arcade",
+      render: renderArcade
+    },
+
+    files: {
+      title: "Files",
+      render: renderFiles
+    },
+
+    settings: {
+      title: "Settings",
+      render: renderSettings
+    }
+  };
+
+
+  function openApp(name) {
+    const app = apps[name];
+
+    if (!app) return;
+
+    $("#appTitle").textContent =
+      app.title;
+
+    const root =
+      $("#appContent");
+
+    root.innerHTML = "";
+
+    app.render(root);
+
+    showScreen("appScreen");
+  }
+
+
+
+  /* =========================================================
+     CLOCK APP
+  ========================================================= */
+
+  function renderClockApp(root) {
+
+    root.innerHTML = `
+      <div
+        style="
+          display:flex;
+          gap:8px;
+          margin-bottom:24px;
+        "
+      >
+        <button
+          id="clockTab"
+          class="primary-btn"
+          type="button"
+        >
+          Jam
+        </button>
+
+        <button
+          id="timerTab"
+          class="secondary-btn"
+          type="button"
+        >
+          Timer
+        </button>
+      </div>
+
+
+      <div
+        id="clockView"
+        style="
+          text-align:center;
+          padding:44px 0;
+        "
+      >
+        <div
+          id="normalClock"
+          style="
+            font-size:44px;
+            font-weight:300;
+            letter-spacing:-1px;
+          "
+        >
+          23:48:00
+        </div>
+
+        <div
+          style="
+            color:#9aa1ab;
+            margin-top:8px;
+          "
+        >
+          Sabtu
+        </div>
+      </div>
+
+
+      <div
+        id="timerView"
+        style="
+          display:none;
+          text-align:center;
+          padding:44px 0;
+        "
+      >
+        <div
+          id="countdownClock"
+          style="
+            font-size:44px;
+            font-weight:300;
+            letter-spacing:-1px;
+          "
+        >
+          00:12:00
+        </div>
+
+        <div
+          style="
+            color:#9aa1ab;
+            margin-top:8px;
+          "
+        >
+          Waktu tersisa
+        </div>
+      </div>
+    `;
+
+
+    const clockTab =
+      $("#clockTab", root);
+
+    const timerTab =
+      $("#timerTab", root);
+
+    const clockView =
+      $("#clockView", root);
+
+    const timerView =
+      $("#timerView", root);
+
+
+    clockTab.addEventListener(
+      "click",
+      () => {
+
+        clockView.style.display = "";
+
+        timerView.style.display =
+          "none";
+
+        clockTab.className =
+          "primary-btn";
+
+        timerTab.className =
+          "secondary-btn";
+      }
+    );
+
+
+    timerTab.addEventListener(
+      "click",
+      () => {
+
+        clockView.style.display =
+          "none";
+
+        timerView.style.display = "";
+
+        timerTab.className =
+          "primary-btn";
+
+        clockTab.className =
+          "secondary-btn";
+      }
+    );
+
+
+    updateTimeUI();
+  }
+
+
+
+  /* =========================================================
+     MESSAGES
+     masih versi lama dulu — nanti kita rombak
+  ========================================================= */
+
+  function renderMessages(root) {
+
+    const chat =
+      document.createElement("div");
+
+    chat.className = "chat";
+
+
+    const messages = [
+      [
+        "them",
+        "Malachi",
+        "Udah siap? Besok kelompok kita presentasi."
+      ],
+
+      [
+        "me",
+        "Kamu",
+        "Iya. Lagi beresin semuanya."
+      ],
+
+      [
+        "them",
+        "Malachi",
+        "Btw Felizio bilang dia nyimpen clue di foto yang diambil jam 19:32."
+      ],
+
+      [
+        "them",
+        "Malachi",
+        "Katanya nama filenya IMG_1511."
+      ],
+
+      [
+        "me",
+        "Kamu",
+        "1511?"
+      ],
+
+      [
+        "them",
+        "Malachi",
+        "Mungkin bukan random."
+      ]
+    ];
+
+
+    messages.forEach(
+      ([who, name, text]) => {
+
+        const bubble =
+          document.createElement("div");
+
+        bubble.className =
+          "bubble " + who;
+
+        bubble.innerHTML =
+          `<b>${name}</b><br>${text}`;
+
+        chat.appendChild(bubble);
+      }
+    );
+
+
     root.appendChild(chat);
   }
 
-  function renderNotes(root){
-    const paper=el("div","note-paper",`
-      <b>things i keep saying i'll do later</b><br><br>
+
+
+  /* =========================================================
+     NOTES
+     masih versi lama dulu — nanti kita rombak
+  ========================================================= */
+
+  function renderNotes(root) {
+
+    const paper =
+      document.createElement("div");
+
+    paper.className =
+      "note-paper";
+
+    paper.innerHTML = `
+      <b>things i keep saying i'll do later</b>
+      <br><br>
+
       • siapin tas<br>
       • balas Malachi<br>
       • doa<br>
       • baca Lukas 15<br>
-      • "cuma satu match lagi"<br><br>
-      <i>kalau lupa kode: angka pertama dari pasal + jumlah huruf kata PULANG.</i>
-    `);
+      • "cuma satu match lagi"
+
+      <br><br>
+
+      <i>
+        kalau lupa kode:
+        angka pertama dari pasal
+        + jumlah huruf kata PULANG
+      </i>
+    `;
+
     root.appendChild(paper);
-    const box=el("div","lockbox",`
+
+
+    const box =
+      document.createElement("div");
+
+    box.className =
+      "lockbox";
+
+    box.innerHTML = `
       <b>Catatan terkunci</b>
-      <p style="color:#9aa7bc">Masukkan kode 4 digit.</p>
-      <input id="noteCode" inputmode="numeric" maxlength="4" placeholder="••••">
-      <button id="noteUnlock" class="primary-btn">Unlock</button>
-      <p id="noteFeedback" class="feedback"></p>
-    `);
+
+      <p style="color:#9aa7bc">
+        Masukkan kode 4 digit.
+      </p>
+
+      <input
+        id="noteCode"
+        inputmode="numeric"
+        maxlength="4"
+        placeholder="••••"
+      >
+
+      <button
+        id="noteUnlock"
+        class="primary-btn"
+        type="button"
+      >
+        Unlock
+      </button>
+
+      <p
+        id="noteFeedback"
+        class="feedback"
+      ></p>
+    `;
+
     root.appendChild(box);
-    $("#noteUnlock").addEventListener("click",()=>{
-      const v=$("#noteCode").value.trim();
-      // 15 + PULANG(6) => 156, padded as 0156
-      if(v==="0156"){
-        $("#noteFeedback").textContent="Unlocked: “Urutan bukan selalu kiri → kanan. Cari arah untuk kembali.”";
-        $("#noteFeedback").style.color="#50d5a5";
-        state.notesUnlocked=true;
-        addFragment("F2","5-13");
-      }else{
-        $("#noteFeedback").textContent="Kode salah.";
-        $("#noteFeedback").style.color="#ff6f86";
-      }
-    });
+
+
+    $("#noteUnlock", root)
+      .addEventListener(
+        "click",
+        () => {
+
+          const value =
+            $("#noteCode", root)
+              .value
+              .trim();
+
+          const feedback =
+            $("#noteFeedback", root);
+
+
+          if (value === "0156") {
+
+            feedback.textContent =
+              "Unlocked: 'Urutan bukan selalu kiri → kanan. Cari arah untuk kembali.'";
+
+            feedback.style.color =
+              "#50d5a5";
+
+            addFragment(
+              "F2",
+              "5-13"
+            );
+
+          } else {
+
+            feedback.textContent =
+              "Kode salah.";
+
+            feedback.style.color =
+              "#ff6f86";
+          }
+        }
+      );
   }
 
-  function renderGallery(root){
-    const info=el("p","",`Cari foto yang disebut di Messages. Tap foto untuk melihat metadata.`);
-    info.style.color="#9aa7bc";root.appendChild(info);
-    const grid=el("div","gallery-grid");
-    const photos=[
-      ["🌆","18:05","IMG_1470"],
-      ["📚","19:32","IMG_1511"],
-      ["🍜","20:14","IMG_1518"],
-      ["🎮","22:46","IMG_1532"]
+
+
+  /* =========================================================
+     GALLERY
+  ========================================================= */
+
+  function renderGallery(root) {
+
+    const info =
+      document.createElement("p");
+
+    info.textContent =
+      "Cari foto yang disebut di Messages. Tap foto untuk melihat metadata.";
+
+    info.style.color =
+      "#9aa7bc";
+
+    root.appendChild(info);
+
+
+    const grid =
+      document.createElement("div");
+
+    grid.className =
+      "gallery-grid";
+
+
+    const photos = [
+
+      [
+        "🌆",
+        "18:05",
+        "IMG_1470"
+      ],
+
+      [
+        "📚",
+        "19:32",
+        "IMG_1511"
+      ],
+
+      [
+        "🍜",
+        "20:14",
+        "IMG_1518"
+      ],
+
+      [
+        "🎮",
+        "22:46",
+        "IMG_1532"
+      ]
     ];
-    photos.forEach(([emoji,time,name])=>{
-      const b=el("button","photo",`${emoji}<span>${time}</span>`);
-      b.type="button";
-      b.addEventListener("click",()=>{
-        if(name==="IMG_1511"){
-          toast("Metadata: IMG_1511 • 19:32 • note: 'first = 11'");
-          addFragment("F1","11");
-        } else toast(`Metadata: ${name} • ${time} • tidak ada catatan.`);
-      });
-      grid.appendChild(b);
-    });
+
+
+    photos.forEach(
+      ([emoji, time, name]) => {
+
+        const button =
+          document.createElement("button");
+
+        button.className =
+          "photo";
+
+        button.type =
+          "button";
+
+        button.innerHTML =
+          `${emoji}<span>${time}</span>`;
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            if (name === "IMG_1511") {
+
+              toast(
+                "Metadata: IMG_1511 • 19:32 • note: first = 11"
+              );
+
+              addFragment(
+                "F1",
+                "11"
+              );
+
+            } else {
+
+              toast(
+                `Metadata: ${name} • ${time} • tidak ada catatan.`
+              );
+            }
+          }
+        );
+
+
+        grid.appendChild(button);
+      }
+    );
+
+
     root.appendChild(grid);
   }
 
-  function renderBrowser(root){
-    const bar=el("div","browser-bar",`
-      <input id="urlBox" value="reconnect.local/" aria-label="alamat">
-      <button id="goBtn" class="primary-btn" style="width:auto">Go</button>
-    `);
-    const page=el("div","browser-page",`
-      <small style="color:#839dff">RECONNECT.LOCAL</small>
-      <h2 style="margin:6px 0">You don't need more content.</h2>
-      <p style="color:#9aa7bc">You need a way out of the loop.</p>
-      <div class="lockbox">
-        <b>Search archive</b>
-        <p style="color:#9aa7bc">Hint: tiga huruf yang muncul sebelum algoritma mulai mengulang.</p>
-        <input id="archiveCode" maxlength="3" placeholder="___">
-        <button id="archiveBtn" class="primary-btn">Search</button>
-        <p id="archiveFeedback" class="feedback"></p>
+
+
+  /* =========================================================
+     BROWSER
+  ========================================================= */
+
+  function renderBrowser(root) {
+
+    root.innerHTML = `
+      <div class="browser-bar">
+
+        <input
+          id="urlBox"
+          value="reconnect.local/"
+          aria-label="alamat"
+        >
+
+        <button
+          id="goBtn"
+          class="primary-btn"
+          style="width:auto"
+          type="button"
+        >
+          Go
+        </button>
+
       </div>
-    `);
-    root.append(bar,page);
-    $("#goBtn").addEventListener("click",()=>toast("Hanya reconnect.local yang tersedia pada perangkat ini."));
-    $("#archiveBtn").addEventListener("click",()=>{
-      const v=$("#archiveCode").value.trim().toUpperCase();
-      if(v==="KEM"){
-        $("#archiveFeedback").textContent="Archive hit: KEM → angka 2-1.";
-        $("#archiveFeedback").style.color="#50d5a5";
-        addFragment("F3","2-1");
-      }else{
-        $("#archiveFeedback").textContent="Tidak ditemukan.";
-        $("#archiveFeedback").style.color="#ff6f86";
-      }
-    });
+
+
+      <div class="browser-page">
+
+        <small style="color:#839dff">
+          RECONNECT.LOCAL
+        </small>
+
+        <h2 style="margin:6px 0">
+          You don't need more content.
+        </h2>
+
+        <p style="color:#9aa7bc">
+          You need a way out of the loop.
+        </p>
+
+
+        <div class="lockbox">
+
+          <b>Search archive</b>
+
+          <p style="color:#9aa7bc">
+            Hint: tiga huruf yang muncul
+            sebelum algoritma mulai mengulang.
+          </p>
+
+          <input
+            id="archiveCode"
+            maxlength="3"
+            placeholder="___"
+          >
+
+          <button
+            id="archiveBtn"
+            class="primary-btn"
+            type="button"
+          >
+            Search
+          </button>
+
+          <p
+            id="archiveFeedback"
+            class="feedback"
+          ></p>
+
+        </div>
+
+      </div>
+    `;
+
+
+    $("#goBtn", root)
+      .addEventListener(
+        "click",
+        () => {
+
+          toast(
+            "Hanya reconnect.local yang tersedia pada perangkat ini."
+          );
+        }
+      );
+
+
+    $("#archiveBtn", root)
+      .addEventListener(
+        "click",
+        () => {
+
+          const value =
+            $("#archiveCode", root)
+              .value
+              .trim()
+              .toUpperCase();
+
+          const feedback =
+            $("#archiveFeedback", root);
+
+
+          if (value === "KEM") {
+
+            feedback.textContent =
+              "Archive hit: KEM → angka 2-1.";
+
+            feedback.style.color =
+              "#50d5a5";
+
+            addFragment(
+              "F3",
+              "2-1"
+            );
+
+          } else {
+
+            feedback.textContent =
+              "Tidak ditemukan.";
+
+            feedback.style.color =
+              "#ff6f86";
+          }
+        }
+      );
   }
 
-  function renderBible(root){
-    const c=el("div","verse-card",`
-      <small>LUKAS 15:17–20</small>
-      <p>“Lalu ia menyadari keadaannya ... Aku akan bangkit dan pergi kepada bapaku ... Maka bangkitlah ia dan pergi kepada bapanya.”</p>
-    `);
-    root.appendChild(c);
-    const q=el("div","lockbox",`
+
+
+  /* =========================================================
+     BIBLE
+  ========================================================= */
+
+  function renderBible(root) {
+
+    const verse =
+      document.createElement("div");
+
+    verse.className =
+      "verse-card";
+
+    verse.innerHTML = `
+      <small>
+        LUKAS 15:17–20
+      </small>
+
+      <p>
+        “Lalu ia menyadari keadaannya ...
+        Aku akan bangkit dan pergi kepada bapaku ...
+        Maka bangkitlah ia dan pergi kepada bapanya.”
+      </p>
+    `;
+
+    root.appendChild(verse);
+
+
+    const box =
+      document.createElement("div");
+
+    box.className =
+      "lockbox";
+
+    box.innerHTML = `
       <b>Susun logika cerita</b>
-      <p style="color:#9aa7bc">Apa pola yang paling tepat?</p>
-      <button class="row-card bible-choice">pergi → sadar → kembali</button>
-      <button class="row-card bible-choice" data-ok="1">menjauh → sadar → bangkit → kembali</button>
-      <button class="row-card bible-choice">sadar → menjauh → kembali</button>
-      <p id="bibleFeedback" class="feedback"></p>
-    `);
-    root.appendChild(q);
-    root.querySelectorAll(".bible-choice").forEach(b=>b.addEventListener("click",()=>{
-      if(b.dataset.ok){
-        $("#bibleFeedback").textContent="Benar. Posisi 'bangkit → kembali' = 12-9.";
-        $("#bibleFeedback").style.color="#50d5a5";
-        addFragment("F4","12-9");
-      }else{
-        $("#bibleFeedback").textContent="Belum tepat.";
-        $("#bibleFeedback").style.color="#ff6f86";
-      }
-    }));
+
+      <p style="color:#9aa7bc">
+        Apa pola yang paling tepat?
+      </p>
+
+      <button
+        class="row-card bible-choice"
+        type="button"
+      >
+        pergi → sadar → kembali
+      </button>
+
+      <button
+        class="row-card bible-choice"
+        data-ok="1"
+        type="button"
+      >
+        menjauh → sadar → bangkit → kembali
+      </button>
+
+      <button
+        class="row-card bible-choice"
+        type="button"
+      >
+        sadar → menjauh → kembali
+      </button>
+
+      <p
+        id="bibleFeedback"
+        class="feedback"
+      ></p>
+    `;
+
+    root.appendChild(box);
+
+
+    $$(".bible-choice", root)
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const feedback =
+              $("#bibleFeedback", root);
+
+
+            if (button.dataset.ok) {
+
+              feedback.textContent =
+                "Benar. Posisi 'bangkit → kembali' = 12-9.";
+
+              feedback.style.color =
+                "#50d5a5";
+
+              addFragment(
+                "F4",
+                "12-9"
+              );
+
+            } else {
+
+              feedback.textContent =
+                "Belum tepat.";
+
+              feedback.style.color =
+                "#ff6f86";
+            }
+          }
+        );
+      });
   }
 
-  function renderArcade(root){
-    const p=el("p","",`Arcade sengaja terlihat penting. Coba lihat apa yang terjadi.`);
-    p.style.color="#9aa7bc"; root.appendChild(p);
-    const grid=el("div","arcade-grid");
-    ["DAILY QUEST","ONE MORE?","RANKED","LUCKY DRAW"].forEach((name,i)=>{
-      const b=el("button","game-tile",`<b>${name}</b><br><small style="color:#c6badc">Tap to play</small>`);
-      b.addEventListener("click",()=>{
-        toast(i===1 ? "Video 1: K • Video 2: E • Video 3: M • setelah itu loop." : "Distraksi. Tidak ada fragmen di sini.");
-      });
-      grid.appendChild(b);
-    });
+
+
+  /* =========================================================
+     ARCADE
+  ========================================================= */
+
+  function renderArcade(root) {
+
+    const text =
+      document.createElement("p");
+
+    text.textContent =
+      "Arcade sengaja terlihat penting. Coba lihat apa yang terjadi.";
+
+    text.style.color =
+      "#9aa7bc";
+
+    root.appendChild(text);
+
+
+    const grid =
+      document.createElement("div");
+
+    grid.className =
+      "arcade-grid";
+
+
+    const games = [
+      "DAILY QUEST",
+      "ONE MORE?",
+      "RANKED",
+      "LUCKY DRAW"
+    ];
+
+
+    games.forEach(
+      (name, index) => {
+
+        const button =
+          document.createElement("button");
+
+        button.className =
+          "game-tile";
+
+        button.type =
+          "button";
+
+        button.innerHTML =
+          `<b>${name}</b><br>
+           <small style="color:#c6badc">
+             Tap to play
+           </small>`;
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            if (index === 1) {
+
+              toast(
+                "Video 1: K • Video 2: E • Video 3: M • setelah itu loop."
+              );
+
+            } else {
+
+              toast(
+                "Distraksi. Tidak ada fragmen di sini."
+              );
+            }
+          }
+        );
+
+
+        grid.appendChild(button);
+      }
+    );
+
+
     root.appendChild(grid);
   }
 
-  function renderFiles(root){
-    const files=[
-      ["mission.txt","1 KB"],
-      ["fragment.tmp","0 KB"],
-      ["screen_time.log","4 KB"]
+
+
+  /* =========================================================
+     FILES
+  ========================================================= */
+
+  function renderFiles(root) {
+
+    const files = [
+
+      [
+        "mission.txt",
+        "1 KB",
+        "mission.txt: 4 fragmen → satu kata."
+      ],
+
+      [
+        "fragment.tmp",
+        "0 KB",
+        "fragment.tmp kosong."
+      ],
+
+      [
+        "screen_time.log",
+        "4 KB",
+        "screen_time.log: Arcade 2h 47m • Bible 0h 06m"
+      ]
     ];
-    files.forEach(([name,size])=>{
-      const r=el("div","file-item",`<span>${name}</span><small>${size}</small>`);
-      r.addEventListener("click",()=>{
-        if(name==="mission.txt") toast("mission.txt: 4 fragmen → satu kata.");
-        else if(name==="screen_time.log") toast("screen_time.log: Arcade 2h 47m • Bible 0h 06m");
-        else toast("fragment.tmp kosong.");
-      });
-      root.appendChild(r);
-    });
+
+
+    files.forEach(
+      ([name, size, message]) => {
+
+        const row =
+          document.createElement("div");
+
+        row.className =
+          "file-item";
+
+        row.innerHTML =
+          `<span>${name}</span>
+           <small>${size}</small>`;
+
+
+        row.addEventListener(
+          "click",
+          () => toast(message)
+        );
+
+
+        root.appendChild(row);
+      }
+    );
   }
 
-  function renderSettings(root){
-    [
-      ["Device","RECONNECT-01"],
-      ["Owner","UNKNOWN"],
-      ["Focus Mode","OFF"],
-      ["Midnight Lock","ON"],
-      ["Hints left",String(state.hints)]
-    ].forEach(([a,b])=>root.appendChild(el("div","setting",`<b>${a}</b><span>${b}</span>`)));
+
+
+  /* =========================================================
+     SETTINGS
+  ========================================================= */
+
+  function renderSettings(root) {
+
+    const settings = [
+
+      ["Device", "RECONNECT-01"],
+
+      ["Owner", "UNKNOWN"],
+
+      ["Focus Mode", "OFF"],
+
+      ["Midnight Lock", "ON"],
+
+      ["Battery", "83%"]
+    ];
+
+
+    settings.forEach(
+      ([name, value]) => {
+
+        const row =
+          document.createElement("div");
+
+        row.className =
+          "setting";
+
+        row.innerHTML =
+          `<b>${name}</b>
+           <span>${value}</span>`;
+
+        root.appendChild(row);
+      }
+    );
   }
 
-  function openFinal(){
-    $("#fragmentSlots").innerHTML="";
-    ["F1","F2","F3","F4"].forEach(k=>{
-      const slot=el("div","fragment-slot",state.fragments[k]||"?");
-      $("#fragmentSlots").appendChild(slot);
-    });
-    showScreen("finalScreen");
-  }
 
-  const lockScreen = $("#lockScreen");
 
-let swipeStartY = 0;
-let swipeDistance = 0;
-let swiping = false;
+  /* =========================================================
+     FRAGMENTS + FINAL
+  ========================================================= */
 
-lockScreen.style.touchAction = "none";
+  function addFragment(key, value) {
 
-lockScreen.addEventListener("pointerdown", (e) => {
-  swiping = true;
-  swipeStartY = e.clientY;
-  swipeDistance = 0;
-
-  lockScreen.style.transition = "none";
-
-  if (lockScreen.setPointerCapture) {
-    lockScreen.setPointerCapture(e.pointerId);
-  }
-});
-
-lockScreen.addEventListener("pointermove", (e) => {
-  if (!swiping) return;
-
-  swipeDistance = Math.max(0, swipeStartY - e.clientY);
-
-  const move = Math.min(swipeDistance, 220);
-
-  lockScreen.style.transform = `translateY(-${move}px)`;
-});
-
-function endSwipe() {
-  if (!swiping) return;
-
-  swiping = false;
-
-  if (swipeDistance >= 100) {
-    lockScreen.style.transition = "transform .28s ease";
-    lockScreen.style.transform = "translateY(-100%)";
-
-    setTimeout(() => {
-      lockScreen.style.transform = "";
-      showScreen("homeScreen");
-      startTimer();
-    }, 280);
-
-  } else {
-    lockScreen.style.transition = "transform .22s ease";
-    lockScreen.style.transform = "translateY(0)";
-  }
-}
-
-lockScreen.addEventListener("pointerup", endSwipe);
-lockScreen.addEventListener("pointercancel", endSwipe);
-  $("#backHome").addEventListener("click",()=>showScreen("homeScreen"));
-  document.querySelectorAll("[data-app]").forEach(b=>b.addEventListener("click",()=>openApp(b.dataset.app)));
-  $("#hintBtn").addEventListener("click",()=>{
-    if(state.hints<=0){toast("Hint habis.");return;}
-    state.hints--;
-    const title=$("#appTitle").textContent;
-    const hint={
-      Messages:"Nama file dan waktu foto bukan dekorasi.",
-      Notes:"Pasal = 15. PULANG punya 6 huruf. Coba jadikan kode 4 digit.",
-      Gallery:"Messages menyebut foto jam 19:32.",
-      Browser:"Arcade memberi tiga huruf sebelum masuk loop.",
-      Bible:"Fokus pada urutan: menjauh → sadar → bangkit → kembali.",
-      Arcade:"Tidak semua app punya fragmen. Tapi satu app bisa punya clue untuk app lain.",
-      Files:"Log bisa memberi konteks, bukan selalu jawaban.",
-      Settings:"Settings tidak menyimpan fragmen."
-    }[title]||"Cari hubungan antar-app.";
-    toast(hint);
-  });
-
-  $("#submitFinal").addEventListener("click",()=>{
-    const v=$("#finalCode").value.trim().toUpperCase().replace(/[^A-Z]/g,"");
-    if(v==="KEMBALI"){
-      clearInterval(state.timer);
-      showScreen("winScreen");
-    }else{
-      $("#finalFeedback").textContent="Password salah. Ubah 11 | 5-13 | 2-1 | 12-9 dengan A=1, B=2, ...";
-      $("#finalFeedback").style.color="#ff6f86";
+    if (state.fragments[key]) {
+      return;
     }
-  });
-  $("#restartBtn").addEventListener("click",()=>location.reload());
 
-  // clock from fictional timeline; not real device time
-  $("#clock").textContent="23:48";
-  $("#lockTime").textContent="23:48";
+    state.fragments[key] =
+      value;
 
-  if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+    toast(
+      `Informasi ditemukan: ${value}`
+    );
+
+
+    if (
+      Object.keys(state.fragments)
+        .length === 4
+    ) {
+      setTimeout(
+        openFinal,
+        700
+      );
+    }
   }
+
+
+  function openFinal() {
+
+    const slots =
+      $("#fragmentSlots");
+
+    slots.innerHTML = "";
+
+
+    [
+      "F1",
+      "F2",
+      "F3",
+      "F4"
+    ].forEach(key => {
+
+      const slot =
+        document.createElement("div");
+
+      slot.className =
+        "fragment-slot";
+
+      slot.textContent =
+        state.fragments[key] || "?";
+
+      slots.appendChild(slot);
+    });
+
+
+    showScreen(
+      "finalScreen"
+    );
+  }
+
+
+  $("#submitFinal")
+    .addEventListener(
+      "click",
+      () => {
+
+        const value =
+          $("#finalCode")
+            .value
+            .trim()
+            .toUpperCase()
+            .replace(
+              /[^A-Z]/g,
+              ""
+            );
+
+
+        if (value === "KEMBALI") {
+
+          if (state.gameTicker) {
+            clearInterval(
+              state.gameTicker
+            );
+          }
+
+          showScreen(
+            "winScreen"
+          );
+
+        } else {
+
+          const feedback =
+            $("#finalFeedback");
+
+          feedback.textContent =
+            "Password salah. Ingat A=1, B=2, C=3 ...";
+
+          feedback.style.color =
+            "#ff6f86";
+        }
+      }
+    );
+
+
+
+  /* =========================================================
+     FULL-SCREEN SWIPE UNLOCK
+  ========================================================= */
+
+  const lockScreen =
+    $("#lockScreen");
+
+  let swipeStartY = 0;
+
+  let swipeDistance = 0;
+
+  let swiping = false;
+
+
+  lockScreen.style.touchAction =
+    "none";
+
+
+  lockScreen.addEventListener(
+    "pointerdown",
+    event => {
+
+      swiping = true;
+
+      swipeStartY =
+        event.clientY;
+
+      swipeDistance = 0;
+
+      lockScreen.style.transition =
+        "none";
+
+
+      if (
+        lockScreen.setPointerCapture
+      ) {
+        lockScreen.setPointerCapture(
+          event.pointerId
+        );
+      }
+    }
+  );
+
+
+  lockScreen.addEventListener(
+    "pointermove",
+    event => {
+
+      if (!swiping) return;
+
+
+      swipeDistance =
+        Math.max(
+          0,
+          swipeStartY -
+          event.clientY
+        );
+
+
+      const move =
+        Math.min(
+          swipeDistance,
+          260
+        );
+
+
+      lockScreen.style.transform =
+        `translateY(-${move}px)`;
+    }
+  );
+
+
+  function endSwipe() {
+
+    if (!swiping) return;
+
+    swiping = false;
+
+
+    if (swipeDistance >= 100) {
+
+      lockScreen.style.transition =
+        "transform .28s ease";
+
+
+      lockScreen.style.transform =
+        "translateY(-100%)";
+
+
+      setTimeout(
+        () => {
+
+          lockScreen.style.transform =
+            "";
+
+          /*
+            TIMER + CLOCK START HERE
+          */
+
+          startGameClock();
+
+          showScreen(
+            "homeScreen"
+          );
+
+        },
+        280
+      );
+
+    } else {
+
+      lockScreen.style.transition =
+        "transform .22s ease";
+
+
+      lockScreen.style.transform =
+        "translateY(0)";
+    }
+  }
+
+
+  lockScreen.addEventListener(
+    "pointerup",
+    endSwipe
+  );
+
+
+  lockScreen.addEventListener(
+    "pointercancel",
+    endSwipe
+  );
+
+
+
+  /* =========================================================
+     NAVIGATION
+  ========================================================= */
+
+  $("#backHome")
+    .addEventListener(
+      "click",
+      () => {
+        showScreen(
+          "homeScreen"
+        );
+      }
+    );
+
+
+  $$("[data-app]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          openApp(
+            button.dataset.app
+          );
+        }
+      );
+    });
+
+
+
+  /* =========================================================
+     HINT BUTTON
+     nanti kita ganti ke diamond system
+  ========================================================= */
+
+  $("#hintBtn")
+    .addEventListener(
+      "click",
+      () => {
+
+        toast(
+          "Hint system baru akan dipasang di objective diamond."
+        );
+      }
+    );
+
+
+
+  /* =========================================================
+     RESTART
+  ========================================================= */
+
+  $("#restartBtn")
+    .addEventListener(
+      "click",
+      () => {
+
+        location.reload();
+      }
+    );
+
+
+
+  /* =========================================================
+     INITIAL STATE
+  ========================================================= */
+
+  updateTimeUI();
+
 })();
