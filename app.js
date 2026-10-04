@@ -20,6 +20,22 @@
     arcade:{title:"Arcade",render:renderArcade},
     files:{title:"Files",render:renderFiles},
     settings:{title:"Settings",render:renderSettings},
+    clock:{
+  title:"Clock",
+  render(root){
+    root.innerHTML = `
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="primary-btn" type="button">Jam</button>
+        <button class="secondary-btn" type="button">Timer</button>
+      </div>
+
+      <div style="text-align:center;padding:40px 0">
+        <div style="font-size:42px;font-weight:300">23:48:00</div>
+        <div style="color:#9aa1ab;margin-top:8px">Sabtu</div>
+      </div>
+    `;
+  }
+},
   };
 
   function showScreen(id){
