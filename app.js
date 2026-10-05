@@ -20,6 +20,11 @@
     unlockedAt: null,
     gameTicker: null,
     timerExpiredNotified: false,
+    unreadChats: {
+  ibu: true,
+  felicia: true,
+  malachi: true
+},
 
     fragments: {},
 
@@ -430,72 +435,317 @@
      masih versi lama dulu — nanti kita rombak
   ========================================================= */
 
-  function renderMessages(root) {
+  function updateMessageBadge() {
+
+  const badge =
+    document.querySelector(
+      '.app-icon[data-app="messages"] .badge'
+    );
+
+  if (!badge) return;
+
+
+  const unreadCount =
+    Object.values(
+      state.unreadChats
+    ).filter(Boolean).length;
+
+
+  if (unreadCount > 0) {
+
+    badge.textContent =
+      unreadCount;
+
+    badge.style.display = "";
+
+  } else {
+
+    badge.style.display =
+      "none";
+  }
+}
+
+
+
+function renderMessages(root) {
+
+  const chats = {
+
+    ibu: {
+      name: "Ibu",
+      preview: "Jangan lupa tidur lebih cepat ya...",
+      time: "23:41",
+
+      messages: [
+        [
+          "them",
+          "Besok Sekolah Minggu kan?"
+        ],
+
+        [
+          "them",
+          "Jangan lupa tidur lebih cepat ya. Sebelum jam 12."
+        ],
+
+        [
+          "me",
+          "Iya ma, bentar lagi."
+        ],
+
+        [
+          "them",
+          "Jangan 'bentar lagi' terus 😭"
+        ]
+      ]
+    },
+
+
+    felicia: {
+      name: "Felicia",
+      preview: "Games besok udah aman?",
+      time: "23:35",
+
+      messages: [
+        [
+          "them",
+          "Games besok udah aman?"
+        ],
+
+        [
+          "me",
+          "Masih gue beresin."
+        ],
+
+        [
+          "them",
+          "Yang penting jangan cuma quiz biasa wkwk"
+        ],
+
+        [
+          "them",
+          "Kan temanya soal kita gampang ke-distract teknologi."
+        ],
+
+        [
+          "me",
+          "Iya, pengennya mereka ngerasain sendiri."
+        ],
+
+        [
+          "them",
+          "Sip. Besok tinggal nyambung ke Lukas 15."
+        ]
+      ]
+    },
+
+
+    malachi: {
+      name: "Malachi",
+      preview: "Ayat Lukas 15 udah gue masukin...",
+      time: "23:28",
+
+      messages: [
+        [
+          "them",
+          "PPT hampir selesai."
+        ],
+
+        [
+          "them",
+          "Ayat Lukas 15 udah gue masukin juga."
+        ],
+
+        [
+          "me",
+          "Bagian yang anak bungsunya sadar terus balik kan?"
+        ],
+
+        [
+          "them",
+          "Yep."
+        ],
+
+        [
+          "them",
+          "Lu cek lagi aja nanti sebelum tidur."
+        ]
+      ]
+    }
+  };
+
+
+  function showInbox() {
+
+    $("#appTitle").textContent =
+      "Messages";
+
+    root.innerHTML = `
+      <div class="messages-heading">
+        <h2>Messages</h2>
+        <span>3 conversations</span>
+      </div>
+
+      <div
+        class="message-list"
+        id="messageList"
+      ></div>
+    `;
+
+
+    const list =
+      $("#messageList", root);
+
+
+    Object.entries(chats)
+      .forEach(([id, chat]) => {
+
+        const unread =
+          state.unreadChats[id];
+
+
+        const row =
+          document.createElement(
+            "button"
+          );
+
+        row.type =
+          "button";
+
+        row.className =
+          "thread-row" +
+          (unread ? " unread" : "");
+
+
+        row.innerHTML = `
+          <div class="thread-avatar">
+            ${chat.name[0]}
+          </div>
+
+          <div class="thread-main">
+
+            <div class="thread-top">
+
+              <strong>
+                ${chat.name}
+              </strong>
+
+              <small>
+                ${chat.time}
+              </small>
+
+            </div>
+
+            <div class="thread-preview">
+              ${chat.preview}
+            </div>
+
+          </div>
+
+          ${
+            unread
+              ? `<span class="unread-dot"></span>`
+              : ``
+          }
+        `;
+
+
+        row.addEventListener(
+          "click",
+          () => {
+
+            state.unreadChats[id] =
+              false;
+
+            updateMessageBadge();
+
+            showConversation(
+              id
+            );
+          }
+        );
+
+
+        list.appendChild(row);
+      });
+  }
+
+
+
+  function showConversation(id) {
 
     const chat =
-      document.createElement("div");
+      chats[id];
 
-    chat.className = "chat";
-
-
-    const messages = [
-      [
-        "them",
-        "Malachi",
-        "Udah siap? Besok kelompok kita presentasi."
-      ],
-
-      [
-        "me",
-        "Kamu",
-        "Iya. Lagi beresin semuanya."
-      ],
-
-      [
-        "them",
-        "Malachi",
-        "Btw Felizio bilang dia nyimpen clue di foto yang diambil jam 19:32."
-      ],
-
-      [
-        "them",
-        "Malachi",
-        "Katanya nama filenya IMG_1511."
-      ],
-
-      [
-        "me",
-        "Kamu",
-        "1511?"
-      ],
-
-      [
-        "them",
-        "Malachi",
-        "Mungkin bukan random."
-      ]
-    ];
+    $("#appTitle").textContent =
+      chat.name;
 
 
-    messages.forEach(
-      ([who, name, text]) => {
+    root.innerHTML = `
+      <button
+        id="backInbox"
+        class="message-back"
+        type="button"
+      >
+        ‹ Messages
+      </button>
+
+      <div class="conversation">
+
+        <div class="conversation-name">
+          <div class="thread-avatar large">
+            ${chat.name[0]}
+          </div>
+
+          <strong>
+            ${chat.name}
+          </strong>
+        </div>
+
+        <div
+          class="chat"
+          id="conversationChat"
+        ></div>
+
+      </div>
+    `;
+
+
+    const chatRoot =
+      $("#conversationChat", root);
+
+
+    chat.messages.forEach(
+      ([who, text]) => {
 
         const bubble =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
 
         bubble.className =
           "bubble " + who;
 
-        bubble.innerHTML =
-          `<b>${name}</b><br>${text}`;
+        bubble.textContent =
+          text;
 
-        chat.appendChild(bubble);
+        chatRoot.appendChild(
+          bubble
+        );
       }
     );
 
 
-    root.appendChild(chat);
+    $("#backInbox", root)
+      .addEventListener(
+        "click",
+        showInbox
+      );
   }
+
+
+  showInbox();
+  updateMessageBadge();
+}
 
 
 
