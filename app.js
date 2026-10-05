@@ -10,11 +10,12 @@
     "homeScreen",
     "appScreen",
     "finalScreen",
-    "winScreen"
+    "winScreen",
+    "failScreen"
   ];
 
-  const GAME_START_TIME = (23 * 3600) + (48 * 60);
-  const TIMER_LENGTH = 12 * 60;
+  const GAME_START_TIME = (23 * 3600) + (55 * 60);
+  const TIMER_LENGTH = 5 * 60;
 
   const state = {
     unlockedAt: null,
@@ -178,15 +179,17 @@
     /* timer finished */
 
     if (
-      state.unlockedAt &&
-      remaining === 0 &&
-      !state.timerExpiredNotified
-    ) {
-      state.timerExpiredNotified = true;
+  state.unlockedAt &&
+  remaining === 0 &&
+  !state.timerExpiredNotified
+) {
+  state.timerExpiredNotified = true;
 
-      toast(
-        "00:00:00 — Waktu yang direncanakan sudah habis."
-      );
+  if (state.gameTicker) {
+    clearInterval(state.gameTicker);
+  }
+
+  showScreen("failScreen");
     }
   }
 
