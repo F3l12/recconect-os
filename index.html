@@ -73,42 +73,137 @@
         </div>
 
         <div class="app-grid">
-          <button class="app-icon" data-app="messages">
-            <span class="icon-box i-message">💬</span><span>Messages</span>
-            <em class="badge">3</em>
-          </button>
-          <button class="app-icon" data-app="notes">
-            <span class="icon-box i-notes">📝</span><span>Notes</span>
-          </button>
-          <button class="app-icon" data-app="gallery">
-            <span class="icon-box i-gallery">▦</span><span>Gallery</span>
-          </button>
-          <button class="app-icon" data-app="clock">
-          <span class="icon-box i-clock">◷</span>
-          <span>Clock</span>
-          </button>
-          <button class="app-icon" data-app="browser">
-            <span class="icon-box i-browser">◎</span><span>Browser</span>
-          </button>
-          <button class="app-icon" data-app="bible">
-            <span class="icon-box i-bible">✝</span><span>Bible</span>
-          </button>
-          <button class="app-icon" data-app="arcade">
-            <span class="icon-box i-game">◈</span><span>Arcade</span>
-          </button>
-          <button class="app-icon" data-app="files">
-            <span class="icon-box i-files">▱</span><span>Files</span>
-          </button>
-          <button class="app-icon" data-app="settings">
-            <span class="icon-box i-settings">⚙</span><span>Settings</span>
-          </button>
+
+  <button class="app-icon" data-app="messages">
+    <span class="icon-box i-message">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M5 5.5h14v10H9l-4 3v-13Z"/>
+      </svg>
+    </span>
+    <span>Messages</span>
+    <em class="badge">3</em>
+  </button>
+
+
+  <button class="app-icon" data-app="notes">
+    <span class="icon-box i-notes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M6 4h12v16H6z"/>
+        <path d="M9 8h6M9 12h6M9 16h4"/>
+      </svg>
+    </span>
+    <span>Notes</span>
+  </button>
+
+
+  <button class="app-icon" data-app="gallery">
+    <span class="icon-box i-gallery">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="4" y="5" width="16" height="14"/>
+        <circle cx="9" cy="10" r="1.5"/>
+        <path d="m6 17 4-4 3 3 2-2 3 3"/>
+      </svg>
+    </span>
+    <span>Gallery</span>
+  </button>
+
+
+  <button class="app-icon" data-app="clock">
+    <span class="icon-box i-clock">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="8"/>
+        <path d="M12 7v5l3 2"/>
+      </svg>
+    </span>
+    <span>Clock</span>
+  </button>
+
+
+  <button class="app-icon" data-app="browser">
+    <span class="icon-box i-browser">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="8"/>
+        <path d="M4 12h16M12 4c2 2 3 5 3 8s-1 6-3 8M12 4c-2 2-3 5-3 8s1 6 3 8"/>
+      </svg>
+    </span>
+    <span>Browser</span>
+  </button>
+
+
+  <button class="app-icon" data-app="bible">
+    <span class="icon-box i-bible">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M6 4h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4Z"/>
+        <path d="M6 17h13M12 8v6M9 11h6"/>
+      </svg>
+    </span>
+    <span>Bible</span>
+  </button>
+
+
+  <button class="app-icon" data-app="arcade">
+    <span class="icon-box i-game">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M7 9h10l2 8H5l2-8Z"/>
+        <path d="M9 12v3M7.5 13.5h3"/>
+        <circle cx="15.5" cy="12.5" r=".8" fill="currentColor" stroke="none"/>
+        <circle cx="17.5" cy="14.5" r=".8" fill="currentColor" stroke="none"/>
+      </svg>
+    </span>
+    <span>Arcade</span>
+  </button>
+
+
+  <button class="app-icon" data-app="files">
+    <span class="icon-box i-files">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M4 7h6l2 2h8v10H4z"/>
+      </svg>
+    </span>
+    <span>Files</span>
+  </button>
+
+
+  <button class="app-icon" data-app="settings">
+    <span class="icon-box i-settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4"/>
+      </svg>
+    </span>
+    <span>Settings</span>
+  </button>
+
         </div>
 
         <div class="dock">
-          <button class="dock-icon" data-app="messages">💬</button>
-          <button class="dock-icon" data-app="browser">◎</button>
-          <button class="dock-icon" data-app="bible">✝</button>
-          <button class="dock-icon" data-app="files">▱</button>
+
+  <button class="dock-icon" data-app="messages">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M5 5.5h14v10H9l-4 3v-13Z"/>
+    </svg>
+  </button>
+
+  <button class="dock-icon" data-app="browser">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="12" r="8"/>
+      <path d="M4 12h16M12 4c2 2 3 5 3 8s-1 6-3 8"/>
+    </svg>
+  </button>
+
+  <button class="dock-icon" data-app="bible">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M6 4h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4Z"/>
+      <path d="M12 8v6M9 11h6"/>
+    </svg>
+  </button>
+
+  <button class="dock-icon" data-app="files">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M4 7h6l2 2h8v10H4z"/>
+    </svg>
+  </button>
+
         </div>
       </section>
 
