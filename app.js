@@ -1322,33 +1322,62 @@
 
     if (swipeDistance >= 100) {
 
-      lockScreen.style.transition =
-        "transform .28s ease";
+  /* ENTER FULLSCREEN */
 
+  const phoneEl = $("#phone");
+
+  if (phoneEl && !document.fullscreenElement) {
+
+    const enterFullscreen =
+      phoneEl.requestFullscreen ||
+      phoneEl.webkitRequestFullscreen;
+
+    if (enterFullscreen) {
+
+      try {
+
+        const result =
+          enterFullscreen.call(phoneEl);
+
+        if (
+          result &&
+          typeof result.catch === "function"
+        ) {
+          result.catch(() => {});
+        }
+
+      } catch (error) {
+        // kalau browser tidak support,
+        // game tetap lanjut normal
+      }
+    }
+  }
+
+
+  /* UNLOCK ANIMATION */
+
+  lockScreen.style.transition =
+    "transform .28s ease";
+
+  lockScreen.style.transform =
+    "translateY(-100%)";
+
+
+  setTimeout(
+    () => {
 
       lockScreen.style.transform =
-        "translateY(-100%)";
+        "";
 
+      startGameClock();
 
-      setTimeout(
-        () => {
-
-          lockScreen.style.transform =
-            "";
-
-          /*
-            TIMER + CLOCK START HERE
-          */
-
-          startGameClock();
-
-          showScreen(
-            "homeScreen"
-          );
-
-        },
-        280
+      showScreen(
+        "homeScreen"
       );
+
+    },
+    280
+  );
 
     } else {
 
