@@ -690,3 +690,294 @@ body{min-height:100vh}
     transition:none!important;
   }
 }
+/* =========================================================
+   HOME SCREEN V2 — warmer, flatter, less "AI UI"
+========================================================= */
+
+.home-screen{
+  background:
+    linear-gradient(
+      rgba(17,16,14,.18),
+      rgba(17,16,14,.18)
+    ),
+    #2b2924;
+
+  padding-left:14px;
+  padding-right:14px;
+}
+
+
+/* OBJECTIVE BAR — jadi strip, bukan rounded card */
+
+.objective-bar{
+  width:100%;
+
+  display:grid;
+  grid-template-columns:28px 1fr 18px;
+  gap:8px;
+
+  align-items:center;
+
+  margin:3px 0 24px;
+  padding:8px 4px 9px;
+
+  background:transparent;
+
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.16);
+
+  border-radius:0;
+
+  text-align:left;
+
+  box-shadow:none;
+  backdrop-filter:none;
+}
+
+
+.objective-diamond{
+  width:24px;
+  height:24px;
+
+  display:grid;
+  place-items:center;
+
+  background:transparent;
+
+  border:0;
+  border-radius:0;
+
+  color:#d0b67a;
+
+  font-size:17px;
+}
+
+
+.objective-text{
+  min-width:0;
+
+  display:flex;
+  flex-direction:column;
+
+  gap:1px;
+}
+
+
+.objective-text small{
+  color:#b4a988;
+
+  font-size:8px;
+  font-weight:700;
+
+  letter-spacing:.14em;
+}
+
+
+.objective-text span{
+  color:#eee9dc;
+
+  font-size:12px;
+  line-height:1.25;
+
+  font-weight:500;
+}
+
+
+.objective-text em{
+  margin-top:2px;
+
+  color:#9d9788;
+
+  font-size:9px;
+  font-style:normal;
+}
+
+
+.objective-arrow{
+  color:#8e887b;
+
+  font-size:18px;
+}
+
+
+/* APP GRID — lebih padat */
+
+.app-grid{
+  display:grid;
+
+  grid-template-columns:repeat(4,1fr);
+
+  gap:21px 8px;
+
+  padding:0 1px;
+}
+
+
+/* app button */
+
+.app-icon{
+  position:relative;
+
+  display:flex;
+  flex-direction:column;
+
+  align-items:center;
+
+  gap:5px;
+
+  border:0;
+  background:transparent;
+
+  padding:0;
+
+  color:#e9e5dc;
+
+  font-size:10px;
+  font-weight:400;
+}
+
+
+/* ICON — kotak kecil, radius dikit */
+
+.icon-box{
+  width:52px;
+  height:52px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:7px;
+
+  border:1px solid rgba(0,0,0,.28);
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.08),
+    0 1px 2px rgba(0,0,0,.38);
+
+  font-size:22px;
+}
+
+
+/* jangan warna candy / AI palette */
+
+.i-message{
+  background:#6d7663;
+}
+
+.i-notes{
+  background:#b2a067;
+  color:#29271f;
+}
+
+.i-gallery{
+  background:#80756a;
+}
+
+.i-clock{
+  background:#53524d;
+}
+
+.i-browser{
+  background:#64736c;
+}
+
+.i-bible{
+  background:#cbc4ad;
+  color:#302f2a;
+}
+
+.i-game{
+  background:#75646c;
+}
+
+.i-files{
+  background:#737365;
+}
+
+.i-settings{
+  background:#5f5e59;
+}
+
+
+/* app labels */
+
+.app-icon > span:last-child{
+  max-width:64px;
+
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+
+  text-shadow:0 1px 2px rgba(0,0,0,.8);
+}
+
+
+/* badge unread */
+
+.badge{
+  position:absolute;
+
+  top:-5px;
+  right:3px;
+
+  min-width:17px;
+  height:17px;
+
+  padding:0 4px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:8px;
+
+  background:#9d413f;
+
+  color:#fff;
+
+  border:1px solid #332724;
+
+  font-size:9px;
+  font-style:normal;
+  font-weight:700;
+}
+
+
+/* DOCK — bukan glass pill */
+
+.dock{
+  position:absolute;
+
+  left:14px;
+  right:14px;
+  bottom:16px;
+
+  height:64px;
+
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  place-items:center;
+
+  background:rgba(27,26,23,.88);
+
+  border-top:1px solid rgba(255,255,255,.09);
+  border-bottom:1px solid rgba(0,0,0,.55);
+
+  border-left:0;
+  border-right:0;
+
+  border-radius:2px;
+
+  box-shadow:none;
+
+  backdrop-filter:none;
+}
+
+
+.dock-icon{
+  border:0;
+  background:transparent;
+
+  font-size:24px;
+
+  opacity:.9;
+}
