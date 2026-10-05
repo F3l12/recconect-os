@@ -981,3 +981,16 @@ body{min-height:100vh}
 
   opacity:.9;
 }
+.icon-box svg{
+  width:27px;
+  height:27px;
+}
+
+.dock-icon svg{
+  width:25px;
+  height:25px;
+}
+
+.dock-icon{
+  color:#d9d5ca;
+}
