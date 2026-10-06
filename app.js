@@ -278,7 +278,62 @@ function showObjectivePopup(text) {
       );
   }
 
+function finishGame() {
 
+  const elapsed =
+    getElapsedSeconds();
+
+  const minutes =
+    Math.floor(elapsed / 60);
+
+  const seconds =
+    elapsed % 60;
+
+  const finishTime =
+    `${String(minutes).padStart(2, "0")}:` +
+    `${String(seconds).padStart(2, "0")}`;
+
+
+  if (state.gameTicker) {
+    clearInterval(
+      state.gameTicker
+    );
+  }
+
+
+  const winScreen =
+    $("#winScreen");
+
+  if (winScreen) {
+
+    winScreen.innerHTML = `
+      <div class="final-card">
+
+        <small>SELESAI</small>
+
+        <h2>${finishTime}</h2>
+
+        <p>
+          Persiapan games selesai.
+        </p>
+
+        <button
+          class="primary-btn"
+          type="button"
+          onclick="location.reload()"
+        >
+          Main Lagi
+        </button>
+
+      </div>
+    `;
+  }
+
+
+  showScreen(
+    "winScreen"
+  );
+}
 
   /* =========================================================
      APPS
@@ -944,10 +999,10 @@ function renderMessages(root) {
                 </div>
               `;
 
-              /*
-                NANTI:
-                finishGame();
-              */
+              setTimeout(
+  finishGame,
+  900
+);
 
             } else {
 
