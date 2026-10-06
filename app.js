@@ -1762,140 +1762,86 @@
   /* =========================================================
      NOTES
   ========================================================= */
+function renderNotes(root) {
 
-  function renderNotes(root) {
+  root.innerHTML = `
+    <div class="notes-list">
 
-    const paper =
-      document.createElement(
-        "div"
-      );
+      <article class="note-paper">
 
+        <small>
+          SENIN
+        </small>
 
-    paper.className =
-      "note-paper";
+        <b>
+          tugas
+        </b>
 
+        <p>
+          Kimia — hal. 82–84,
+          no. 13–20
+        </p>
 
-    paper.innerHTML = `
-      <b>
-        things i keep saying i'll do later
-      </b>
+        <p>
+          Ekonomi — selesain
+          jurnal penyesuaian
+        </p>
 
-      <br><br>
-
-      • siapin tas<br>
-      • balas Malachi<br>
-      • doa<br>
-      • baca Lukas 15<br>
-      • "cuma satu match lagi"
-
-      <br><br>
-
-      <i>
-        kalau lupa kode:
-        angka pertama dari pasal
-        + jumlah huruf kata PULANG
-      </i>
-    `;
+      </article>
 
 
-    root.appendChild(
-      paper
-    );
+      <article class="note-paper">
+
+        <small>
+          JANGAN LUPA
+        </small>
+
+        <b>
+          minggu ini
+        </b>
+
+        <p>
+          ringkasan sejarah
+        </p>
+
+        <p>
+          tugas bindo
+        </p>
+
+        <p>
+          cek ppt sekolah minggu
+        </p>
+
+      </article>
 
 
-    const box =
-      document.createElement(
-        "div"
-      );
+      <article class="note-paper">
 
+        <small>
+          RANDOM
+        </small>
 
-    box.className =
-      "lockbox";
+        <b>
+          nanti
+        </b>
 
+        <p>
+          rapihin folder download
+        </p>
 
-    box.innerHTML = `
-      <b>
-        Catatan terkunci
-      </b>
+        <p>
+          ganti wallpaper
+        </p>
 
-      <p
-        style="color:#9aa7bc"
-      >
-        Masukkan kode 4 digit.
-      </p>
+        <p>
+          tidur lebih awal
+        </p>
 
-      <input
-        id="noteCode"
-        inputmode="numeric"
-        maxlength="4"
-        placeholder="••••"
-      >
+      </article>
 
-      <button
-        id="noteUnlock"
-        class="primary-btn"
-        type="button"
-      >
-        Unlock
-      </button>
-
-      <p
-        id="noteFeedback"
-        class="feedback"
-      ></p>
-    `;
-
-
-    root.appendChild(
-      box
-    );
-
-
-    $("#noteUnlock", root)
-      .addEventListener(
-        "click",
-        () => {
-
-          const value =
-            $("#noteCode", root)
-              .value
-              .trim();
-
-
-          const feedback =
-            $("#noteFeedback", root);
-
-
-          if (
-            value ===
-            "0156"
-          ) {
-
-            feedback.textContent =
-              "Unlocked: 'Urutan bukan selalu kiri → kanan. Cari arah untuk kembali.'";
-
-
-            feedback.style.color =
-              "#50d5a5";
-
-
-            addFragment(
-              "F2",
-              "5-13"
-            );
-
-          } else {
-
-            feedback.textContent =
-              "Kode salah.";
-
-
-            feedback.style.color =
-              "#ff6f86";
-          }
-        }
-      );
-  }
+    </div>
+  `;
+}
 
 
 
@@ -2038,146 +1984,150 @@
 
   function renderBrowser(root) {
 
-    root.innerHTML = `
-      <div class="browser-bar">
+  const history = [
 
-        <input
-          id="urlBox"
-          value="reconnect.local/"
-          aria-label="alamat"
-        >
+    [
+      "23:39",
+      "cara bangun pagi"
+    ],
 
-        <button
-          id="goBtn"
-          class="primary-btn"
-          style="width:auto"
-          type="button"
-        >
-          Go
-        </button>
+    [
+      "23:17",
+      "how to be cool without trying"
+    ],
 
+    [
+      "22:51",
+      "what is inside a woman's thoughts"
+    ],
+
+    [
+      "22:08",
+      "why do cats stare at nothing"
+    ],
+
+    [
+      "21:34",
+      "google drive"
+    ],
+
+    [
+      "20:42",
+      "can you survive on 4 hours of sleep"
+    ],
+
+    [
+      "19:56",
+      "why do i look better in mirrors"
+    ],
+
+    [
+      "18:23",
+      "youtube"
+    ],
+
+    [
+      "17:11",
+      "is cereal soup"
+    ],
+
+    [
+      "16:48",
+      "weather tomorrow"
+    ],
+
+    [
+      "15:02",
+      "why am i tired after doing nothing"
+    ],
+
+    [
+      "13:27",
+      "how to win an argument when you're wrong"
+    ]
+
+  ];
+
+
+  root.innerHTML = `
+    <div class="browser-search">
+
+      <div class="browser-search-box">
+        Search
       </div>
 
+    </div>
 
-      <div class="browser-page">
 
-        <small
-          style="color:#839dff"
-        >
-          RECONNECT.LOCAL
+    <div class="browser-history-head">
+
+      <strong>
+        Recent searches
+      </strong>
+
+      <small>
+        TODAY
+      </small>
+
+    </div>
+
+
+    <div
+      id="browserHistory"
+      class="browser-history"
+    ></div>
+  `;
+
+
+  const list =
+    $("#browserHistory", root);
+
+
+  history.forEach(
+    ([time, query]) => {
+
+      const row =
+        document.createElement(
+          "button"
+        );
+
+
+      row.type =
+        "button";
+
+
+      row.className =
+        "browser-history-row";
+
+
+      row.innerHTML = `
+        <span>
+          ${query}
+        </span>
+
+        <small>
+          ${time}
         </small>
+      `;
 
 
-        <h2
-          style="margin:6px 0"
-        >
-          You don't need more content.
-        </h2>
-
-
-        <p
-          style="color:#9aa7bc"
-        >
-          You need a way out of the loop.
-        </p>
-
-
-        <div class="lockbox">
-
-          <b>
-            Search archive
-          </b>
-
-          <p
-            style="color:#9aa7bc"
-          >
-            Hint: tiga huruf yang muncul
-            sebelum algoritma mulai mengulang.
-          </p>
-
-          <input
-            id="archiveCode"
-            maxlength="3"
-            placeholder="___"
-          >
-
-          <button
-            id="archiveBtn"
-            class="primary-btn"
-            type="button"
-          >
-            Search
-          </button>
-
-          <p
-            id="archiveFeedback"
-            class="feedback"
-          ></p>
-
-        </div>
-
-      </div>
-    `;
-
-
-    $("#goBtn", root)
-      .addEventListener(
+      row.addEventListener(
         "click",
         () => {
 
           toast(
-            "Hanya reconnect.local yang tersedia pada perangkat ini."
+            "No internet connection."
           );
         }
       );
 
 
-    $("#archiveBtn", root)
-      .addEventListener(
-        "click",
-        () => {
-
-          const value =
-            $("#archiveCode", root)
-              .value
-              .trim()
-              .toUpperCase();
-
-
-          const feedback =
-            $("#archiveFeedback", root);
-
-
-          if (
-            value ===
-            "KEM"
-          ) {
-
-            feedback.textContent =
-              "Archive hit: KEM → angka 2-1.";
-
-
-            feedback.style.color =
-              "#50d5a5";
-
-
-            addFragment(
-              "F3",
-              "2-1"
-            );
-
-          } else {
-
-            feedback.textContent =
-              "Tidak ditemukan.";
-
-
-            feedback.style.color =
-              "#ff6f86";
-          }
-        }
+      list.appendChild(
+        row
       );
-  }
+    }
+  );
+}
 
 
 
@@ -4479,150 +4429,157 @@
      FILES
   ========================================================= */
 
-  function renderFiles(root) {
+ function renderFiles(root) {
 
-    const files = [
+  const files = [
 
-      [
-        "mission.txt",
-        "1 KB",
-        "mission.txt: 4 fragmen → satu kata."
-      ],
+    [
+      "Kimia_latihan.pdf",
+      "2.4 MB",
+      "Today, 18:42"
+    ],
 
-      [
-        "fragment.tmp",
-        "0 KB",
-        "fragment.tmp kosong."
-      ],
+    [
+      "PPT_SekolahMinggu_v4.pptx",
+      "8.1 MB",
+      "Today, 17:16"
+    ],
 
-      [
-        "screen_time.log",
-        "4 KB",
-        "screen_time.log: Arcade 2h 47m • Bible 0h 06m"
-      ]
-    ];
+    [
+      "Ekonomi_final_FINAL.xlsx",
+      "184 KB",
+      "Yesterday"
+    ],
 
+    [
+      "IMG_20261002_193411.jpg",
+      "3.7 MB",
+      "Oct 2"
+    ],
 
-    files.forEach(
-      (
-        [
-          name,
-          size,
-          message
-        ]
-      ) => {
+    [
+      "untitled (3).pdf",
+      "1.1 MB",
+      "Sep 29"
+    ],
 
-        const row =
-          document.createElement(
-            "div"
-          );
-
-
-        row.className =
-          "file-item";
-
-
-        row.innerHTML = `
-          <span>
-            ${name}
-          </span>
-
-          <small>
-            ${size}
-          </small>
-        `;
+    [
+      "audio_17.m4a",
+      "742 KB",
+      "Sep 27"
+    ]
+  ];
 
 
-        row.addEventListener(
-          "click",
-          () => {
+  files.forEach(
+    ([name, size, date]) => {
 
-            toast(
-              message
-            );
-          }
+      const row =
+        document.createElement(
+          "div"
         );
 
 
-        root.appendChild(
-          row
-        );
-      }
-    );
-  }
+      row.className =
+        "file-item";
+
+
+      row.innerHTML = `
+        <span>
+          ${name}
+        </span>
+
+        <small>
+          ${size}<br>
+          ${date}
+        </small>
+      `;
+
+
+      root.appendChild(
+        row
+      );
+    }
+  );
+}
 
 
 
   /* =========================================================
      SETTINGS
   ========================================================= */
+function renderSettings(root) {
 
-  function renderSettings(root) {
+  const settings = [
 
-    const settings = [
+    [
+      "Wi-Fi",
+      "Connected"
+    ],
 
-      [
-        "Device",
-        "RECONNECT-01"
-      ],
+    [
+      "Battery",
+      "83%"
+    ],
 
-      [
-        "Owner",
-        "UNKNOWN"
-      ],
+    [
+      "Battery Saver",
+      "Off"
+    ],
 
-      [
-        "Focus Mode",
-        "OFF"
-      ],
+    [
+      "Focus Mode",
+      "Off"
+    ],
 
-      [
-        "Midnight Lock",
-        "ON"
-      ],
+    [
+      "Dark Mode",
+      "On"
+    ],
 
-      [
-        "Battery",
-        "83%"
-      ]
-    ];
+    [
+      "Storage",
+      "91.4 / 128 GB"
+    ],
 
+    [
+      "Screen time today",
+      "6h 38m"
+    ]
 
-    settings.forEach(
-      (
-        [
-          name,
-          value
-        ]
-      ) => {
-
-        const row =
-          document.createElement(
-            "div"
-          );
+  ];
 
 
-        row.className =
-          "setting";
+  settings.forEach(
+    ([name, value]) => {
 
-
-        row.innerHTML = `
-          <b>
-            ${name}
-          </b>
-
-          <span>
-            ${value}
-          </span>
-        `;
-
-
-        root.appendChild(
-          row
+      const row =
+        document.createElement(
+          "div"
         );
-      }
-    );
-  }
+
+
+      row.className =
+        "setting";
+
+
+      row.innerHTML = `
+        <b>
+          ${name}
+        </b>
+
+        <span>
+          ${value}
+        </span>
+      `;
+
+
+      root.appendChild(
+        row
+      );
+    }
+  );
+}
 
 
 
