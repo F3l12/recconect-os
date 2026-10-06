@@ -1587,3 +1587,135 @@ button{
 .bible-complete .primary-btn{
   margin-top:20px;
 }
+/* =========================================================
+   IMPORTANT CHAT CLUE
+========================================================= */
+
+.clue-pulse{
+  cursor:pointer;
+
+  border-left:
+    2px solid #b99c60;
+
+  animation:
+    cluePulse 1.15s
+    ease-in-out infinite;
+}
+
+@keyframes cluePulse{
+
+  0%,
+  100%{
+    background:#3c3933;
+
+    box-shadow:
+      0 0 0 rgba(184,157,98,0);
+  }
+
+  50%{
+    background:#4a4437;
+
+    box-shadow:
+      0 0 12px
+      rgba(184,157,98,.38);
+  }
+}
+
+
+.clue-opened{
+  border-left:
+    2px solid #70644d;
+}
+
+
+/* =========================================================
+   NEW OBJECTIVE POPUP
+========================================================= */
+
+.objective-popup{
+  position:absolute;
+
+  z-index:90;
+
+  top:38px;
+  left:14px;
+  right:14px;
+
+  padding:10px 11px 11px;
+
+  border-left:
+    3px solid #b89d62;
+
+  background:#302d27;
+
+  box-shadow:
+    0 5px 14px
+    rgba(0,0,0,.38);
+
+  transform:
+    translateY(-140%);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:
+    transform .28s ease,
+    opacity .2s ease;
+}
+
+
+.objective-popup.show{
+  transform:
+    translateY(0);
+
+  opacity:1;
+}
+
+
+.objective-popup small{
+  display:block;
+
+  margin-bottom:3px;
+
+  color:#b89d62;
+
+  font-size:7px;
+  font-weight:700;
+
+  letter-spacing:.14em;
+}
+
+
+.objective-popup strong{
+  display:block;
+
+  color:#e7e1d5;
+
+  font-size:11px;
+  font-weight:500;
+
+  line-height:1.35;
+}
+
+
+/* objective bar flashes once */
+
+.objective-bar.objective-flash{
+  animation:
+    objectiveFlash
+    .55s ease
+    3;
+}
+
+
+@keyframes objectiveFlash{
+
+  50%{
+    border-bottom-color:
+      #b89d62;
+
+    background:
+      rgba(184,157,98,.07);
+  }
+}
