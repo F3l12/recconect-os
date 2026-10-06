@@ -1594,8 +1594,7 @@ button{
 .clue-pulse{
   cursor:pointer;
 
-  border-left:
-    2px solid #b99c60;
+  border-left:2px solid #b89d62;
 
   animation:
     cluePulse 1.15s
@@ -1609,24 +1608,22 @@ button{
     background:#3c3933;
 
     box-shadow:
-      0 0 0 rgba(184,157,98,0);
+      0 0 0
+      rgba(184,157,98,0);
   }
 
   50%{
-    background:#4a4437;
+    background:#4b4437;
 
     box-shadow:
-      0 0 12px
-      rgba(184,157,98,.38);
+      0 0 14px
+      rgba(184,157,98,.42);
   }
 }
 
-
 .clue-opened{
-  border-left:
-    2px solid #70644d;
+  border-left:2px solid #70644d;
 }
-
 
 /* =========================================================
    NEW OBJECTIVE POPUP
