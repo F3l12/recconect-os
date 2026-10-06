@@ -686,6 +686,7 @@ function renderMessages(root) {
     ["them", "sekitar 720 kali"],
     ["me", "oke sip"]
   ]
+   }
 };
 
 
