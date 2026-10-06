@@ -1848,133 +1848,416 @@ function renderNotes(root) {
   /* =========================================================
      GALLERY
   ========================================================= */
+function renderGallery(root) {
 
-  function renderGallery(root) {
+  const photos = [
 
-    const info =
-      document.createElement(
-        "p"
+    {
+      src: "./assets/gallery/chudGhost.jpg",
+      name: "IMG_2841.jpg"
+    },
+
+    {
+      src: "./assets/gallery/hampter67.jpg",
+      name: "IMG_2845.jpg"
+    },
+
+    {
+      src: "./assets/gallery/muehehheCat.jpg",
+      name: "IMG_2850.jpg"
+    },
+
+    {
+      src: "./assets/gallery/ghostHousedude.jpg",
+      name: "IMG_2853.jpg"
+    },
+
+    {
+      src: "./assets/gallery/hampterRage.jpg",
+      name: "IMG_2857.jpg"
+    },
+
+    {
+      src: "./assets/gallery/beemoviethanos.jpg",
+      name: "IMG_2862.jpg"
+    }
+
+  ];
+
+
+  root.innerHTML = `
+    <div class="gallery-head">
+
+      <div>
+        <small>
+          RECENTS
+        </small>
+
+        <h2>
+          Gallery
+        </h2>
+      </div>
+
+      <span>
+        ${photos.length} photos
+      </span>
+
+    </div>
+
+
+    <div
+      id="galleryGrid"
+      class="gallery-real-grid"
+    ></div>
+  `;
+
+
+  const grid =
+    $("#galleryGrid", root);
+
+
+  photos.forEach(
+    (photo, index) => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.type =
+        "button";
+
+
+      button.className =
+        "gallery-thumb";
+
+
+      button.innerHTML = `
+        <img
+          src="${photo.src}"
+          alt=""
+          draggable="false"
+        >
+      `;
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          openViewer(
+            index
+          );
+        }
       );
 
 
-    info.textContent =
-      "Cari foto yang disebut di Messages. Tap foto untuk melihat metadata.";
+      grid.appendChild(
+        button
+      );
+    }
+  );
 
 
-    info.style.color =
-      "#9aa7bc";
+
+  function openViewer(
+    startIndex
+  ) {
+
+    const phone =
+      $("#phone");
 
 
-    root.appendChild(
-      info
-    );
+    let currentIndex =
+      startIndex;
 
 
-    const grid =
+    const viewer =
       document.createElement(
         "div"
       );
 
 
-    grid.className =
-      "gallery-grid";
+    viewer.className =
+      "gallery-viewer";
 
 
-    const photos = [
+    viewer.innerHTML = `
+      <div class="gallery-viewer-top">
 
-      [
-        "🌆",
-        "18:05",
-        "IMG_1470"
-      ],
-
-      [
-        "📚",
-        "19:32",
-        "IMG_1511"
-      ],
-
-      [
-        "🍜",
-        "20:14",
-        "IMG_1518"
-      ],
-
-      [
-        "🎮",
-        "22:46",
-        "IMG_1532"
-      ]
-    ];
+        <button
+          id="galleryClose"
+          type="button"
+        >
+          ‹
+        </button>
 
 
-    photos.forEach(
-      (
-        [
-          emoji,
-          time,
-          name
-        ]
-      ) => {
+        <div>
 
-        const button =
-          document.createElement(
-            "button"
+          <strong id="galleryFileName">
+          </strong>
+
+          <small id="galleryCounter">
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="galleryImageArea"
+        class="gallery-image-area"
+      >
+
+        <img
+          id="galleryFullImage"
+          draggable="false"
+          alt=""
+        >
+
+      </div>
+
+
+      <div class="gallery-viewer-bottom">
+
+        <button
+          id="galleryPrev"
+          type="button"
+        >
+          ‹
+        </button>
+
+
+        <span>
+          RECENTS
+        </span>
+
+
+        <button
+          id="galleryNext"
+          type="button"
+        >
+          ›
+        </button>
+
+      </div>
+    `;
+
+
+    phone.appendChild(
+      viewer
+    );
+
+
+    const image =
+      $("#galleryFullImage", viewer);
+
+
+    const fileName =
+      $("#galleryFileName", viewer);
+
+
+    const counter =
+      $("#galleryCounter", viewer);
+
+
+    const prev =
+      $("#galleryPrev", viewer);
+
+
+    const next =
+      $("#galleryNext", viewer);
+
+
+
+    function draw() {
+
+      const photo =
+        photos[
+          currentIndex
+        ];
+
+
+      image.src =
+        photo.src;
+
+
+      fileName.textContent =
+        photo.name;
+
+
+      counter.textContent =
+        `${currentIndex + 1} of ${photos.length}`;
+
+
+      prev.disabled =
+        currentIndex ===
+        0;
+
+
+      next.disabled =
+        currentIndex ===
+        photos.length - 1;
+    }
+
+
+
+    function goPrevious() {
+
+      if (
+        currentIndex <=
+        0
+      ) {
+
+        return;
+      }
+
+
+      currentIndex--;
+
+
+      draw();
+    }
+
+
+
+    function goNext() {
+
+      if (
+        currentIndex >=
+        photos.length - 1
+      ) {
+
+        return;
+      }
+
+
+      currentIndex++;
+
+
+      draw();
+    }
+
+
+
+    $("#galleryClose", viewer)
+      .addEventListener(
+        "click",
+        () => {
+
+          viewer.remove();
+        }
+      );
+
+
+    prev.addEventListener(
+      "click",
+      goPrevious
+    );
+
+
+    next.addEventListener(
+      "click",
+      goNext
+    );
+
+
+
+    /* swipe kiri / kanan */
+
+    const imageArea =
+      $("#galleryImageArea", viewer);
+
+
+    let startX =
+      0;
+
+
+    let dragging =
+      false;
+
+
+    imageArea.addEventListener(
+      "pointerdown",
+      event => {
+
+        dragging =
+          true;
+
+
+        startX =
+          event.clientX;
+
+
+        if (
+          imageArea.setPointerCapture
+        ) {
+
+          imageArea.setPointerCapture(
+            event.pointerId
           );
-
-
-        button.className =
-          "photo";
-
-
-        button.type =
-          "button";
-
-
-        button.innerHTML =
-          `${emoji}<span>${time}</span>`;
-
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            if (
-              name ===
-              "IMG_1511"
-            ) {
-
-              toast(
-                "Metadata: IMG_1511 • 19:32 • note: first = 11"
-              );
-
-
-              addFragment(
-                "F1",
-                "11"
-              );
-
-            } else {
-
-              toast(
-                `Metadata: ${name} • ${time} • tidak ada catatan.`
-              );
-            }
-          }
-        );
-
-
-        grid.appendChild(
-          button
-        );
+        }
       }
     );
 
 
-    root.appendChild(
-      grid
+    imageArea.addEventListener(
+      "pointerup",
+      event => {
+
+        if (
+          !dragging
+        ) {
+
+          return;
+        }
+
+
+        dragging =
+          false;
+
+
+        const distance =
+          event.clientX -
+          startX;
+
+
+        if (
+          distance >
+          55
+        ) {
+
+          goPrevious();
+        }
+
+
+        if (
+          distance <
+          -55
+        ) {
+
+          goNext();
+        }
+      }
     );
+
+
+    imageArea.addEventListener(
+      "pointercancel",
+      () => {
+
+        dragging =
+          false;
+      }
+    );
+
+
+    draw();
   }
+}
 
 
 
