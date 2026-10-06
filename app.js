@@ -23,6 +23,7 @@
     timerExpiredNotified: false,
     bibleSolved: false,
     bibleStep: 0,
+    verseClueOpened: false,
     unreadChats: {
   ibu: true,
   felicia: true,
