@@ -22,6 +22,7 @@
     gameTicker: null,
     timerExpiredNotified: false,
     bibleSolved: false,
+    bibleStep: 0,
     unreadChats: {
   ibu: true,
   felicia: true,
@@ -1202,107 +1203,498 @@ function renderMessages(root) {
 
   function renderBible(root) {
 
-    const verse =
-      document.createElement("div");
+  const verses = [
 
-    verse.className =
-      "verse-card";
+    {
+      number: "21",
 
-    verse.innerHTML = `
+      pieces: [
+        "Ayah, kata anak itu,",
+        "aku sudah berdosa terhadap Allah",
+        "dan terhadap Ayah.",
+        "Tidak layak lagi",
+        "aku disebut anak Ayah."
+      ]
+    },
+
+    {
+      number: "22",
+
+      pieces: [
+        "Tetapi ayahnya memanggil pelayan-pelayannya",
+        "dan berkata, Cepat!",
+        "Ambillah pakaian yang paling bagus",
+        "dan pakaikanlah kepadanya.",
+        "Kenakanlah cincin pada jarinya",
+        "dan sepatu pada kakinya."
+      ]
+    },
+
+    {
+      number: "24",
+
+      pieces: [
+        "Sebab anakku ini sudah mati,",
+        "sekarang hidup lagi;",
+        "ia sudah hilang,",
+        "sekarang ditemukan kembali.",
+        "Lalu mulailah mereka berpesta."
+      ]
+    }
+
+  ];
+
+
+  function shuffle(array) {
+
+    const result =
+      [...array];
+
+    for (
+      let i = result.length - 1;
+      i > 0;
+      i--
+    ) {
+
+      const j =
+        Math.floor(
+          Math.random() *
+          (i + 1)
+        );
+
+      [
+        result[i],
+        result[j]
+      ] = [
+        result[j],
+        result[i]
+      ];
+    }
+
+    return result;
+  }
+
+
+
+  /* ===============================
+     ALL VERSES FINISHED
+  =============================== */
+
+  if (state.bibleSolved) {
+
+    root.innerHTML = `
+      <div class="bible-reader-head">
+
+        <small>LUKAS 15</small>
+
+        <h2>
+          Ayat selesai diperbaiki.
+        </h2>
+
+        <p>
+          Kamu sudah membaca bagian
+          yang Felicia maksud.
+        </p>
+
+      </div>
+
+      <button
+        id="backToMessages"
+        class="primary-btn"
+        type="button"
+      >
+        Kembali ke Messages
+      </button>
+    `;
+
+
+    $("#backToMessages", root)
+      .addEventListener(
+        "click",
+        () => {
+
+          openApp(
+            "messages"
+          );
+        }
+      );
+
+    return;
+  }
+
+
+
+  /* ===============================
+     CURRENT VERSE
+  =============================== */
+
+  const verse =
+    verses[state.bibleStep];
+
+  let selected = [];
+
+  let remaining =
+    shuffle(
+      verse.pieces
+    );
+
+
+  root.innerHTML = `
+    <div class="bible-reader-head">
+
       <small>
-        LUKAS 15:17–20
+        LUKAS 15:${verse.number}
       </small>
 
+      <h2>
+        Perbaiki ayat
+      </h2>
+
       <p>
-        “Lalu ia menyadari keadaannya ...
-        Aku akan bangkit dan pergi kepada bapaku ...
-        Maka bangkitlah ia dan pergi kepada bapanya.”
-      </p>
-    `;
-
-    root.appendChild(verse);
-
-
-    const box =
-      document.createElement("div");
-
-    box.className =
-      "lockbox";
-
-    box.innerHTML = `
-      <b>Susun logika cerita</b>
-
-      <p style="color:#9aa7bc">
-        Apa pola yang paling tepat?
+        Buka Alkitab asli dan susun
+        potongan berikut sesuai
+        urutan ayatnya.
       </p>
 
+    </div>
+
+
+    <div class="verse-progress">
+
+      <span class="${
+        state.bibleStep >= 0
+          ? "done"
+          : ""
+      }">
+        21
+      </span>
+
+      <span class="${
+        state.bibleStep >= 1
+          ? "done"
+          : ""
+      }">
+        22
+      </span>
+
+      <span class="${
+        state.bibleStep >= 2
+          ? "done"
+          : ""
+      }">
+        24
+      </span>
+
+    </div>
+
+
+    <div class="verse-answer">
+
+      <small>
+        URUTANMU
+      </small>
+
+      <div
+        id="selectedPieces"
+        class="selected-pieces"
+      ></div>
+
+    </div>
+
+
+    <div class="verse-pool">
+
+      <small>
+        POTONGAN AYAT
+      </small>
+
+      <div
+        id="availablePieces"
+        class="available-pieces"
+      ></div>
+
+    </div>
+
+
+    <div class="bible-actions">
+
       <button
-        class="row-card bible-choice"
+        id="resetVerse"
+        class="secondary-btn"
         type="button"
       >
-        pergi → sadar → kembali
+        Ulang
       </button>
 
       <button
-        class="row-card bible-choice"
-        data-ok="1"
+        id="checkVerse"
+        class="primary-btn"
         type="button"
       >
-        menjauh → sadar → bangkit → kembali
+        Cek urutan
       </button>
 
-      <button
-        class="row-card bible-choice"
-        type="button"
-      >
-        sadar → menjauh → kembali
-      </button>
-
-      <p
-        id="bibleFeedback"
-        class="feedback"
-      ></p>
-    `;
-
-    root.appendChild(box);
+    </div>
 
 
-    $$(".bible-choice", root)
-      .forEach(button => {
+    <p
+      id="verseFeedback"
+      class="verse-feedback"
+    ></p>
+  `;
 
-        button.addEventListener(
+
+
+  const selectedRoot =
+    $("#selectedPieces", root);
+
+  const availableRoot =
+    $("#availablePieces", root);
+
+  const feedback =
+    $("#verseFeedback", root);
+
+
+
+  function draw() {
+
+    selectedRoot.innerHTML =
+      "";
+
+    availableRoot.innerHTML =
+      "";
+
+
+    selected.forEach(
+      (text, index) => {
+
+        const piece =
+          document.createElement(
+            "button"
+          );
+
+        piece.type =
+          "button";
+
+        piece.className =
+          "verse-piece selected";
+
+        piece.innerHTML = `
+          <span>
+            ${index + 1}
+          </span>
+
+          ${text}
+        `;
+
+
+        piece.addEventListener(
           "click",
           () => {
 
-            const feedback =
-              $("#bibleFeedback", root);
+            selected.splice(
+              index,
+              1
+            );
 
+            remaining.push(
+              text
+            );
 
-            if (button.dataset.ok) {
+            feedback.textContent =
+              "";
 
-              feedback.textContent =
-                "Benar. Posisi 'bangkit → kembali' = 12-9.";
-
-              feedback.style.color =
-                "#50d5a5";
-
-              addFragment(
-                "F4",
-                "12-9"
-              );
-
-            } else {
-
-              feedback.textContent =
-                "Belum tepat.";
-
-              feedback.style.color =
-                "#ff6f86";
-            }
+            draw();
           }
         );
-      });
+
+
+        selectedRoot.appendChild(
+          piece
+        );
+      }
+    );
+
+
+
+    remaining.forEach(
+      (text, index) => {
+
+        const piece =
+          document.createElement(
+            "button"
+          );
+
+        piece.type =
+          "button";
+
+        piece.className =
+          "verse-piece";
+
+        piece.textContent =
+          text;
+
+
+        piece.addEventListener(
+          "click",
+          () => {
+
+            remaining.splice(
+              index,
+              1
+            );
+
+            selected.push(
+              text
+            );
+
+            feedback.textContent =
+              "";
+
+            draw();
+          }
+        );
+
+
+        availableRoot.appendChild(
+          piece
+        );
+      }
+    );
   }
+
+
+
+  $("#resetVerse", root)
+    .addEventListener(
+      "click",
+      () => {
+
+        selected = [];
+
+        remaining =
+          shuffle(
+            verse.pieces
+          );
+
+        feedback.textContent =
+          "";
+
+        draw();
+      }
+    );
+
+
+
+  $("#checkVerse", root)
+    .addEventListener(
+      "click",
+      () => {
+
+        if (
+          selected.length !==
+          verse.pieces.length
+        ) {
+
+          feedback.textContent =
+            "Masih ada potongan yang belum dipakai.";
+
+          return;
+        }
+
+
+        const correct =
+          selected.every(
+            (text, index) =>
+              text ===
+              verse.pieces[index]
+          );
+
+
+        if (!correct) {
+
+          feedback.textContent =
+            "Urutannya belum tepat. Cocokkan lagi dengan Alkitab.";
+
+          return;
+        }
+
+
+        state.bibleStep++;
+
+
+        if (
+          state.bibleStep >=
+          verses.length
+        ) {
+
+          state.bibleSolved =
+            true;
+
+          const objective =
+            $("#objectiveText");
+
+          if (objective) {
+            objective.textContent =
+              "Balik ke chat Felicia.";
+          }
+
+
+          root.innerHTML = `
+            <div class="bible-complete">
+
+              <small>
+                LUKAS 15
+              </small>
+
+              <h2>
+                Selesai.
+              </h2>
+
+              <p>
+                Semua bagian ayat sudah
+                disusun dengan benar.
+              </p>
+
+              <button
+                id="backToMessages"
+                class="primary-btn"
+                type="button"
+              >
+                Kembali ke Messages
+              </button>
+
+            </div>
+          `;
+
+
+          $("#backToMessages", root)
+            .addEventListener(
+              "click",
+              () => {
+
+                openApp(
+                  "messages"
+                );
+              }
+            );
+
+
+          return;
+        }
+
+
+        /*
+          lanjut langsung ke ayat berikutnya
+        */
+
+        renderBible(root);
+      }
+    );
+
+
+  draw();
+}
 
 
 
