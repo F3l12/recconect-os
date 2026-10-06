@@ -856,9 +856,16 @@ function renderMessages(root) {
     */
 
     requestAnimationFrame(() => {
-      root.scrollTop =
-        root.scrollHeight;
-    });
+
+  const scrollArea =
+    root.closest(".screen");
+
+  if (scrollArea) {
+    scrollArea.scrollTop =
+      scrollArea.scrollHeight;
+  }
+
+});
 
 
     $("#backInbox", root)
