@@ -24,6 +24,7 @@
     bibleSolved: false,
     bibleStep: 0,
     verseClueOpened: false,
+    timePenaltySeconds: 0,
     unreadChats: {
   ibu: true,
   felicia: true,
@@ -131,20 +132,93 @@ function showObjectivePopup(text) {
       2400
     );
 }
+ function showTimePenaltyPopup(seconds) {
+
+  const phone =
+    $("#phone");
+
+  if (!phone) return;
+
+
+  let popup =
+    $("#timePenaltyPopup");
+
+
+  if (!popup) {
+
+    popup =
+      document.createElement("div");
+
+    popup.id =
+      "timePenaltyPopup";
+
+    popup.className =
+      "time-penalty-popup";
+
+    phone.appendChild(
+      popup
+    );
+  }
+
+
+  popup.innerHTML = `
+    <small>WAKTU BERLALU</small>
+    <strong>
+      +00:${String(seconds).padStart(2, "0")}
+    </strong>
+  `;
+
+
+  popup.classList.remove(
+    "show"
+  );
+
+
+  requestAnimationFrame(
+    () => {
+      popup.classList.add(
+        "show"
+      );
+    }
+  );
+
+
+  clearTimeout(
+    popup.hideTimer
+  );
+
+
+  popup.hideTimer =
+    setTimeout(
+      () => {
+        popup.classList.remove(
+          "show"
+        );
+      },
+      1800
+    );
+} 
 
   /* =========================================================
      TIME SYSTEM
   ========================================================= */
 
-  function getElapsedSeconds() {
-    if (!state.unlockedAt) {
-      return 0;
-    }
+ function getElapsedSeconds() {
 
-    return Math.floor(
+  if (!state.unlockedAt) {
+    return 0;
+  }
+
+  const realElapsed =
+    Math.floor(
       (Date.now() - state.unlockedAt) / 1000
     );
-  }
+
+  return (
+    realElapsed +
+    state.timePenaltySeconds
+  );
+}
 
 
   function formatClock(totalSeconds) {
@@ -1975,81 +2049,348 @@ function renderMessages(root) {
      ARCADE
   ========================================================= */
 
-  function renderArcade(root) {
+function renderArcade(root) {
 
-    const text =
-      document.createElement("p");
+  root.innerHTML = `
+    <div class="arcade-head">
 
-    text.textContent =
-      "Arcade sengaja terlihat penting. Coba lihat apa yang terjadi.";
+      <small>ARCADE // QUICK PLAY</small>
 
-    text.style.color =
-      "#9aa7bc";
+      <h2>Signal Rush</h2>
 
-    root.appendChild(text);
+      <p>
+        Tap sinyal yang menyala.
+        8 hit untuk menyelesaikan match.
+      </p>
 
-
-    const grid =
-      document.createElement("div");
-
-    grid.className =
-      "arcade-grid";
+    </div>
 
 
-    const games = [
-      "DAILY QUEST",
-      "ONE MORE?",
-      "RANKED",
-      "LUCKY DRAW"
-    ];
+    <div
+      id="arcadeStartView"
+      class="arcade-start"
+    >
+      <div class="arcade-record">
+        <span>MATCH</span>
+        <strong>± 8 SEC</strong>
+      </div>
+
+      <button
+        id="startArcade"
+        class="primary-btn"
+        type="button"
+      >
+        PLAY
+      </button>
+    </div>
 
 
-    games.forEach(
-      (name, index) => {
+    <div
+      id="arcadeGame"
+      class="arcade-game"
+      hidden
+    >
 
-        const button =
-          document.createElement("button");
+      <div class="arcade-score">
 
-        button.className =
-          "game-tile";
+        <span>
+          HIT
+          <b id="arcadeHits">0</b>/8
+        </span>
 
-        button.type =
-          "button";
+        <span>
+          MISS
+          <b id="arcadeMisses">0</b>
+        </span>
 
-        button.innerHTML =
-          `<b>${name}</b><br>
-           <small style="color:#c6badc">
-             Tap to play
-           </small>`;
+      </div>
 
 
-        button.addEventListener(
-          "click",
-          () => {
+      <div
+        id="arcadeBoard"
+        class="signal-board"
+      ></div>
 
-            if (index === 1) {
+    </div>
 
-              toast(
-                "Video 1: K • Video 2: E • Video 3: M • setelah itu loop."
+
+    <div
+      id="arcadeResult"
+      class="arcade-result-screen"
+      hidden
+    ></div>
+  `;
+
+
+  const startView =
+    $("#arcadeStartView", root);
+
+  const startButton =
+    $("#startArcade", root);
+
+  const game =
+    $("#arcadeGame", root);
+
+  const board =
+    $("#arcadeBoard", root);
+
+  const hitsText =
+    $("#arcadeHits", root);
+
+  const missesText =
+    $("#arcadeMisses", root);
+
+  const result =
+    $("#arcadeResult", root);
+
+
+  let hits = 0;
+  let misses = 0;
+
+  let activeIndex = -1;
+
+  let startedAt = 0;
+
+
+  const cells = [];
+
+
+  for (
+    let i = 0;
+    i < 9;
+    i++
+  ) {
+
+    const cell =
+      document.createElement(
+        "button"
+      );
+
+    cell.type =
+      "button";
+
+    cell.className =
+      "signal-cell";
+
+
+    cell.addEventListener(
+      "click",
+      () => {
+
+        if (
+          i !== activeIndex
+        ) {
+
+          misses++;
+
+          missesText.textContent =
+            misses;
+
+          cell.classList.add(
+            "miss"
+          );
+
+
+          setTimeout(
+            () => {
+              cell.classList.remove(
+                "miss"
               );
+            },
+            160
+          );
 
-            } else {
+          return;
+        }
 
-              toast(
-                "Distraksi. Tidak ada fragmen di sini."
-              );
-            }
-          }
+
+        hits++;
+
+        hitsText.textContent =
+          hits;
+
+
+        cell.classList.remove(
+          "active"
         );
 
 
-        grid.appendChild(button);
+        if (hits >= 8) {
+
+          finishMatch();
+
+          return;
+        }
+
+
+        nextSignal();
       }
     );
 
 
-    root.appendChild(grid);
+    cells.push(cell);
+
+    board.appendChild(cell);
   }
+
+
+
+  function nextSignal() {
+
+    cells.forEach(
+      cell => {
+        cell.classList.remove(
+          "active"
+        );
+      }
+    );
+
+
+    let next;
+
+
+    do {
+
+      next =
+        Math.floor(
+          Math.random() * 9
+        );
+
+    } while (
+      next === activeIndex
+    );
+
+
+    activeIndex =
+      next;
+
+
+    cells[
+      activeIndex
+    ].classList.add(
+      "active"
+    );
+  }
+
+
+
+  function startMatch() {
+
+    hits = 0;
+    misses = 0;
+
+    hitsText.textContent =
+      "0";
+
+    missesText.textContent =
+      "0";
+
+
+    startView.hidden =
+      true;
+
+    result.hidden =
+      true;
+
+    game.hidden =
+      false;
+
+
+    startedAt =
+      performance.now();
+
+
+    nextSignal();
+  }
+
+
+
+  function finishMatch() {
+
+    const matchTime =
+      (
+        (
+          performance.now() -
+          startedAt
+        ) / 1000
+      ).toFixed(1);
+
+
+    activeIndex =
+      -1;
+
+
+    cells.forEach(
+      cell => {
+        cell.classList.remove(
+          "active"
+        );
+      }
+    );
+
+
+    game.hidden =
+      true;
+
+    result.hidden =
+      false;
+
+
+    /* setiap match membuang 30 detik */
+
+    state.timePenaltySeconds +=
+      30;
+
+
+    updateTimeUI();
+
+
+    showTimePenaltyPopup(
+      30
+    );
+
+
+    result.innerHTML = `
+      <small>MATCH COMPLETE</small>
+
+      <h2>${matchTime}s</h2>
+
+      <div class="arcade-result-stats">
+
+        <span>
+          8 HIT
+        </span>
+
+        <span>
+          ${misses} MISS
+        </span>
+
+      </div>
+
+      <button
+        id="playAgain"
+        class="secondary-btn"
+        type="button"
+      >
+        PLAY AGAIN
+      </button>
+    `;
+
+
+    $("#playAgain", result)
+      .addEventListener(
+        "click",
+        startMatch
+      );
+  }
+
+
+
+  startButton.addEventListener(
+    "click",
+    startMatch
+  );
+}
 
 
 
