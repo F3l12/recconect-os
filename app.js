@@ -751,23 +751,96 @@ function renderMessages(root) {
       $("#conversationChat", root);
 
 
-    chat.messages.forEach(
-      ([who, text]) => {
+   chat.messages.forEach(
+  ([who, text]) => {
 
-        const bubble =
-          document.createElement("div");
+    const bubble =
+      document.createElement("div");
 
-        bubble.className =
-          "bubble " + who;
 
-        bubble.textContent =
-          text;
+    const isVerseClue =
+      id === "felicia" &&
+      text ===
+        "21-22 sama 24 paling kepake";
 
-        chatRoot.appendChild(
-          bubble
-        );
-      }
+
+    bubble.className =
+      "bubble " + who;
+
+
+    if (
+      isVerseClue &&
+      !state.verseClueOpened
+    ) {
+      bubble.classList.add(
+        "clue-pulse"
+      );
+    }
+
+
+    if (
+      isVerseClue &&
+      state.verseClueOpened
+    ) {
+      bubble.classList.add(
+        "clue-opened"
+      );
+    }
+
+
+    bubble.textContent =
+      text;
+
+
+    if (isVerseClue) {
+
+      bubble.addEventListener(
+        "click",
+        () => {
+
+          if (
+            state.verseClueOpened
+          ) {
+            return;
+          }
+
+
+          state.verseClueOpened =
+            true;
+
+
+          bubble.classList.remove(
+            "clue-pulse"
+          );
+
+          bubble.classList.add(
+            "clue-opened"
+          );
+
+
+          const objective =
+            $("#objectiveText");
+
+
+          if (objective) {
+            objective.textContent =
+              "Baca Lukas 15:21–22 dan 24.";
+          }
+
+
+          showObjectivePopup(
+            "Baca Lukas 15:21–22 dan 24."
+          );
+        }
+      );
+    }
+
+
+    chatRoot.appendChild(
+      bubble
     );
+  }
+);
 
 
     if (
