@@ -2286,3 +2286,225 @@ button{
 .arcade-result-actions .secondary-btn{
   margin:0;
 }
+/* =========================================================
+   BIBLE SEARCH
+========================================================= */
+
+.bible-search-head{
+  padding:5px 2px 16px;
+}
+
+.bible-search-head small{
+  color:#9b8b68;
+
+  font-size:8px;
+  font-weight:700;
+
+  letter-spacing:.14em;
+}
+
+.bible-search-head h2{
+  margin:5px 0 0;
+
+  font-size:22px;
+  font-weight:500;
+}
+
+
+.bible-search-wrap{
+  margin-bottom:12px;
+}
+
+
+.bible-search-input{
+  width:100%;
+
+  box-sizing:border-box;
+
+  padding:11px 12px;
+
+  border:
+    1px solid #48433a;
+
+  border-radius:3px;
+
+  outline:none;
+
+  background:#2e2b26;
+
+  color:#e2ddd3;
+
+  font:inherit;
+
+  font-size:11px;
+}
+
+
+.bible-search-input::placeholder{
+  color:#817b70;
+}
+
+
+.bible-search-input:focus{
+  border-color:#8e7a52;
+}
+
+
+.bible-search-input:disabled{
+  opacity:.45;
+
+  cursor:not-allowed;
+}
+
+
+.bible-search-note{
+  margin:14px 2px 7px;
+
+  color:#777168;
+
+  font-size:7px;
+  font-weight:700;
+
+  letter-spacing:.14em;
+}
+
+
+.bible-search-empty{
+  margin-top:24px;
+
+  padding:16px 12px;
+
+  border-left:
+    2px solid #555047;
+
+  background:#292722;
+}
+
+
+.bible-search-empty small{
+  color:#7e786d;
+
+  font-size:7px;
+
+  letter-spacing:.14em;
+}
+
+
+.bible-search-empty p{
+  margin:6px 0 0;
+
+  color:#918b80;
+
+  font-size:10px;
+
+  line-height:1.45;
+}
+
+
+.bible-reference-list{
+  display:flex;
+
+  flex-direction:column;
+
+  gap:5px;
+}
+
+
+.bible-reference-row{
+  width:100%;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  padding:11px 10px;
+
+  border:
+    1px solid #3e3a33;
+
+  border-radius:3px;
+
+  background:#302d28;
+
+  color:#ddd7cb;
+
+  text-align:left;
+}
+
+
+.bible-reference-row:active{
+  background:#3a362f;
+
+  border-color:#71664f;
+}
+
+
+.bible-reference-row strong{
+  display:block;
+
+  font-size:11px;
+
+  font-weight:500;
+}
+
+
+.bible-reference-row small{
+  display:block;
+
+  margin-top:3px;
+
+  color:#817b70;
+
+  font-size:8px;
+}
+
+
+.bible-reference-row > span{
+  color:#706a60;
+
+  font-size:18px;
+  font-weight:300;
+}
+
+
+.bible-no-results{
+  padding:16px 5px;
+
+  color:#807a70;
+
+  font-size:10px;
+}
+
+
+.bible-reference-page{
+  margin-top:18px;
+
+  padding:14px 12px;
+
+  border-left:
+    2px solid #655b45;
+
+  background:#2c2924;
+}
+
+
+.bible-reference-page small{
+  color:#8d7d5d;
+
+  font-size:7px;
+
+  letter-spacing:.14em;
+}
+
+
+.bible-reference-page p{
+  margin:6px 0 0;
+
+  color:#aaa397;
+
+  font-size:10px;
+
+  line-height:1.45;
+}
