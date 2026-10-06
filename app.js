@@ -588,19 +588,25 @@ function renderMessages(root) {
   const chats = {
 
     ibu: {
-      name: "Ibu",
-      preview: "Jangan lupa tidur lebih cepat ya...",
-      time: "23:41",
+  name: "Ibu",
+  preview: "Jangan lupa tidur lebih cepat ya...",
+  time: "23:41",
 
-      messages: [
-        ["them", "Besok Sekolah Minggu kan?"],
-        ["them", "Jangan lupa tidur lebih cepat ya. Sebelum jam 12."],
-        ["me", "iyaa ma"],
-        ["me", "bentar lagi tidur"],
-        ["them", "Jangan bentar lagi terus 😭"]
-      ]
-    },
-
+  messages: [
+    ["them", "Udah makan?"],
+    ["me", "udah"],
+    ["them", "Besok Sekolah Minggu kan?"],
+    ["me", "iyaa"],
+    ["them", "Tasnya udah siap?"],
+    ["me", "belom"],
+    ["them", "Ya siapin dulu sebelum tidur"],
+    ["me", "iyaa nanti"],
+    ["them", "Jangan lupa tidur lebih cepat ya. Sebelum jam 12."],
+    ["me", "iyaa ma"],
+    ["me", "bentar lagi tidur"],
+    ["them", "Jangan bentar lagi terus"]
+  ]
+},
 
     felicia: {
       name: "Felicia",
@@ -662,21 +668,25 @@ function renderMessages(root) {
     },
 
 
-    malachi: {
-      name: "Malachi",
-      preview: "ppt udah aman",
-      time: "23:27",
+   malachi: {
+  name: "Malachi",
+  preview: "oke sip",
+  time: "23:27",
 
-      messages: [
-        ["me", "chi ppt gmn"],
-        ["them", "udah aman"],
-        ["me", "ayat udh masuk?"],
-        ["them", "udah"],
-        ["them", "Lukas 15"],
-        ["me", "ok makasih"]
-      ]
-    }
-  };
+  messages: [
+    ["them", "besok lu bawa laptop ga"],
+    ["me", "kayaknya hp aja"],
+    ["them", "oh oke"],
+    ["me", "ppt aman kan"],
+    ["them", "aman"],
+    ["me", "ayat udh masuk?"],
+    ["them", "udah"],
+    ["them", "Lukas 15"],
+    ["me", "besok dateng jam brp"],
+    ["them", "sekitar 720 kali"],
+    ["me", "oke sip"]
+  ]
+};
 
 
   function showInbox() {
@@ -934,94 +944,175 @@ function renderMessages(root) {
 
   function renderFeliciaReplies() {
 
-    const area =
-      $("#quickReplyArea", root);
+  const area =
+    $("#quickReplyArea", root);
 
-    if (!area) return;
-
-    area.innerHTML = `
-      <div class="quick-reply-label">
-        Felicia: jadi penutupnya apa?
-      </div>
-
-      <button
-        class="quick-reply"
-        data-answer="wrong"
-        type="button"
-      >
-        Berarti teknologi harus dijauhi.
-      </button>
-
-      <button
-        class="quick-reply"
-        data-answer="correct"
-        type="button"
-      >
-        Kalau hal lain mulai membuat kita melupakan Tuhan,
-        kita perlu kembali memprioritaskan Tuhan.
-      </button>
-
-      <button
-        class="quick-reply"
-        data-answer="wrong"
-        type="button"
-      >
-        Intinya kita harus mengurangi screen time.
-      </button>
-    `;
+  if (!area) return;
 
 
-    $$(".quick-reply", area)
-      .forEach(button => {
+  area.innerHTML = `
+    <div class="quick-reply-label">
+      Felicia: jadi penutupnya apa?
+    </div>
 
-        button.addEventListener(
-          "click",
-          () => {
+    <button
+      class="quick-reply"
+      data-answer="wrong"
+      type="button"
+    >
+      Berarti teknologi harus dijauhi.
+    </button>
 
-            if (
-              button.dataset.answer ===
-              "correct"
-            ) {
+    <button
+      class="quick-reply"
+      data-answer="correct"
+      type="button"
+    >
+      Kalau hal lain mulai membuat kita melupakan Tuhan,
+      kita perlu kembali memprioritaskan Tuhan.
+    </button>
 
-              area.innerHTML = `
-                <div class="bubble me">
-                  Kalau hal lain mulai membuat kita
-                  melupakan Tuhan, kita perlu kembali
-                  memprioritaskan Tuhan.
-                </div>
+    <button
+      class="quick-reply"
+      data-answer="wrong"
+      type="button"
+    >
+      Intinya kita harus mengurangi screen time.
+    </button>
+  `;
 
-                <div class="bubble them">
-                  nah iya
-                </div>
 
-                <div class="bubble them">
-                  pake itu aja besok
-                </div>
-              `;
+  $$(".quick-reply", area)
+    .forEach(button => {
 
-              setTimeout(
-  finishGame,
-  900
-);
+      button.addEventListener(
+        "click",
+        () => {
 
-            } else {
+          if (
+            button.dataset.answer ===
+            "correct"
+          ) {
 
-              const reply =
-                document.createElement("div");
+            area.innerHTML = "";
 
-              reply.className =
-                "bubble them";
+            area.classList.add(
+              "reply-conversation"
+            );
 
-              reply.textContent =
-                "bukan gitu 😭 coba baca lagi inti ayatnya";
 
-              area.prepend(reply);
+            const myReply =
+              document.createElement("div");
+
+            myReply.className =
+              "bubble me";
+
+            myReply.textContent =
+              "Kalau hal lain mulai membuat kita melupakan Tuhan, kita perlu kembali memprioritaskan Tuhan.";
+
+            area.appendChild(
+              myReply
+            );
+
+
+            const scrollToBottom =
+              () => {
+
+                const scrollArea =
+                  root.closest(".screen");
+
+                if (scrollArea) {
+                  scrollArea.scrollTop =
+                    scrollArea.scrollHeight;
+                }
+              };
+
+
+            scrollToBottom();
+
+
+            setTimeout(
+              () => {
+
+                const reply1 =
+                  document.createElement(
+                    "div"
+                  );
+
+                reply1.className =
+                  "bubble them";
+
+                reply1.textContent =
+                  "nah iya";
+
+                area.appendChild(
+                  reply1
+                );
+
+                scrollToBottom();
+
+              },
+              450
+            );
+
+
+            setTimeout(
+              () => {
+
+                const reply2 =
+                  document.createElement(
+                    "div"
+                  );
+
+                reply2.className =
+                  "bubble them";
+
+                reply2.textContent =
+                  "pake itu aja besok";
+
+                area.appendChild(
+                  reply2
+                );
+
+                scrollToBottom();
+
+              },
+              950
+            );
+
+
+            setTimeout(
+              finishGame,
+              1800
+            );
+
+          } else {
+
+            const oldReply =
+              $(".wrong-reply-msg", area);
+
+            if (oldReply) {
+              oldReply.remove();
             }
-          }
-        );
-      });
-  }
 
+
+            const reply =
+              document.createElement("div");
+
+            reply.className =
+              "bubble them wrong-reply-msg";
+
+            reply.textContent =
+              "bukan gitu, coba baca lagi inti ayatnya";
+
+            area.prepend(
+              reply
+            );
+          }
+        }
+      );
+    });
+}
 
   showInbox();
   updateMessageBadge();
@@ -1816,6 +1907,9 @@ function renderMessages(root) {
             objective.textContent =
               "Balik ke chat Felicia.";
           }
+          showObjectivePopup(
+  "Balik ke chat Felicia."
+);
 
 
           root.innerHTML = `
