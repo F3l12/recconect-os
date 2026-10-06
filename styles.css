@@ -58,9 +58,7 @@ button{
 }
 
 
-/* =========================================================
-   STAGE / FIXED PHONE SHAPE
-========================================================= */
+/* STAGE / FIXED PHONE SHAPE */
 
 .stage{
   width:100vw;
@@ -101,8 +99,6 @@ button{
 }
 
 
-/* actual phone: use the real screen, no fake outer frame */
-
 @media (max-width:599px){
   .phone{
     border-radius:0;
@@ -111,9 +107,7 @@ button{
 }
 
 
-/* =========================================================
-   STATUS BAR
-========================================================= */
+/* STATUS BAR */
 
 .statusbar{
   position:absolute;
@@ -150,9 +144,7 @@ button{
 }
 
 
-/* =========================================================
-   SCREENS
-========================================================= */
+/* SCREENS */
 
 .screen{
   display:none;
@@ -174,9 +166,7 @@ button{
 }
 
 
-/* =========================================================
-   LOCK SCREEN
-========================================================= */
+/* LOCK SCREEN */
 
 .lock-screen{
   padding:64px 18px 22px;
@@ -368,9 +358,7 @@ button{
 }
 
 
-/* =========================================================
-   HOME SCREEN
-========================================================= */
+/* HOME SCREEN */
 
 .home-screen{
   padding-left:14px;
@@ -469,13 +457,45 @@ button{
 }
 
 .mission-widget{
-  display:none!important;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:
+    "label time"
+    "text time";
+  gap:2px 12px;
+  align-items:end;
+
+  margin:-8px 1px 20px;
+  padding:0 0 11px;
+
+  border-bottom:1px solid rgba(226,216,193,.12);
+}
+
+.mission-widget small{
+  grid-area:label;
+  color:#7f796d;
+  font-size:7px;
+  font-weight:700;
+  letter-spacing:.14em;
+}
+
+.mission-widget strong{
+  grid-area:time;
+  color:#d8d1c3;
+  font-size:20px;
+  font-weight:450;
+  letter-spacing:-.04em;
+}
+
+.mission-widget span{
+  grid-area:text;
+  color:#918b80;
+  font-size:9px;
+  line-height:1.3;
 }
 
 
-/* =========================================================
-   HOME APPS
-========================================================= */
+/* HOME APPS */
 
 .app-grid{
   display:grid;
@@ -631,9 +651,7 @@ button{
 }
 
 
-/* =========================================================
-   DOCK
-========================================================= */
+/* DOCK */
 
 .dock{
   position:absolute;
@@ -677,9 +695,7 @@ button{
 }
 
 
-/* =========================================================
-   APP SHELL
-========================================================= */
+/* APP SHELL */
 
 .app-screen{
   padding:40px 0 0;
@@ -741,46 +757,14 @@ button{
 }
 
 
-/* =========================================================
-   GENERIC APP COMPONENTS
-========================================================= */
+/* GENERIC APP COMPONENTS */
 
-.list{
-  display:grid;
 
-  gap:7px;
-}
 
-.row-card{
-  width:100%;
-
-  padding:12px;
-
-  border:1px solid var(--line);
-  border-radius:5px;
-
-  background:#2a2823;
-
-  color:var(--text);
-
-  text-align:left;
-}
-
-.row-card b{
-  display:block;
-
-  margin-bottom:3px;
-
-  font-size:13px;
-}
-
-.row-card p{
-  margin:0;
-
-  color:var(--muted);
-
-  font-size:12px;
-  line-height:1.45;
+.notes-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
 }
 
 .note-paper{
@@ -795,39 +779,6 @@ button{
 
   font-size:13px;
   line-height:1.62;
-}
-
-.lockbox{
-  margin-top:12px;
-
-  padding:13px;
-
-  border:1px solid var(--line);
-  border-radius:5px;
-
-  background:#25231f;
-}
-
-.lockbox input,
-.final-card input{
-  width:100%;
-
-  margin:8px 0;
-  padding:11px 12px;
-
-  border:1px solid #4a453d;
-  border-radius:4px;
-
-  background:#171613;
-
-  color:#fff;
-
-  outline:none;
-}
-
-.lockbox input:focus,
-.final-card input:focus{
-  border-color:#8d805f;
 }
 
 .primary-btn,
@@ -855,9 +806,7 @@ button{
 }
 
 
-/* =========================================================
-   MESSAGES
-========================================================= */
+/* MESSAGES */
 
 .messages-heading{
   display:flex;
@@ -1073,144 +1022,7 @@ button{
 }
 
 
-/* =========================================================
-   GALLERY
-========================================================= */
-
-.gallery-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-
-  gap:7px;
-}
-
-.photo{
-  position:relative;
-
-  overflow:hidden;
-
-  aspect-ratio:1;
-
-  display:grid;
-  place-items:center;
-
-  border:1px solid var(--line);
-  border-radius:4px;
-
-  background:#302d27;
-
-  font-size:25px;
-}
-
-.photo span{
-  position:absolute;
-
-  left:7px;
-  bottom:6px;
-
-  padding:3px 5px;
-
-  border-radius:3px;
-
-  background:rgba(0,0,0,.58);
-
-  font-size:9px;
-}
-
-
-/* =========================================================
-   BROWSER
-========================================================= */
-
-.browser-bar{
-  display:flex;
-
-  gap:7px;
-
-  margin-bottom:10px;
-}
-
-.browser-bar input{
-  flex:1;
-
-  min-width:0;
-
-  padding:10px 11px;
-
-  border:1px solid var(--line);
-  border-radius:4px;
-
-  background:#2a2823;
-
-  color:#fff;
-}
-
-.browser-page{
-  padding:15px;
-
-  border:1px solid var(--line);
-  border-radius:4px;
-
-  background:#282620;
-}
-
-
-/* =========================================================
-   BIBLE
-========================================================= */
-
-.verse-card{
-  padding:13px;
-
-  border-left:2px solid #a69265;
-  border-radius:2px;
-
-  background:#2b2923;
-
-  font-size:13px;
-  line-height:1.6;
-}
-
-.verse{
-  padding:11px 12px;
-
-  border-left:2px solid var(--good);
-  border-radius:2px;
-
-  background:#282a24;
-
-  text-align:left;
-}
-
-
-/* =========================================================
-   ARCADE
-========================================================= */
-
-.arcade-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-
-  gap:8px;
-}
-
-.game-tile{
-  min-height:110px;
-
-  padding:12px;
-
-  border:1px solid var(--line);
-  border-radius:4px;
-
-  background:#2e292d;
-
-  text-align:left;
-}
-
-
-/* =========================================================
-   FILES / SETTINGS
-========================================================= */
+/* FILES / SETTINGS */
 
 .file-item,
 .setting{
@@ -1234,9 +1046,7 @@ button{
 }
 
 
-/* =========================================================
-   TOAST
-========================================================= */
+/* TOAST */
 
 .toast{
   position:absolute;
@@ -1271,11 +1081,8 @@ button{
 }
 
 
-/* =========================================================
-   FINAL / WIN / FAIL
-========================================================= */
+/* FINAL / WIN / FAIL */
 
-.final-screen,
 .win-screen,
 .fail-screen{
   display:none;
@@ -1285,7 +1092,6 @@ button{
   background:#211f1b;
 }
 
-.final-screen.active,
 .win-screen.active,
 .fail-screen.active{
   display:grid;
@@ -1298,23 +1104,7 @@ button{
   text-align:center;
 }
 
-.final-logo,
-.win-symbol{
-  width:68px;
-  height:68px;
 
-  margin:0 auto 17px;
-
-  display:grid;
-  place-items:center;
-
-  border:1px solid var(--line);
-  border-radius:5px;
-
-  background:#302d27;
-
-  font-size:30px;
-}
 
 .final-card small,
 .win-screen small,
@@ -1345,44 +1135,14 @@ button{
   line-height:1.58;
 }
 
-.fragment-slots{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
 
-  gap:7px;
-
-  margin:17px 0;
-}
-
-.fragment-slot{
-  padding:11px 5px;
-
-  border:1px solid var(--line);
-  border-radius:4px;
-
-  background:#2a2823;
-
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    monospace;
-
-  font-size:12px;
-}
-
-.feedback{
-  min-height:22px;
-}
 
 .win-screen{
   text-align:center;
 }
 
 
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
+/* ACCESSIBILITY */
 
 @media (prefers-reduced-motion:reduce){
   *{
@@ -1391,9 +1151,7 @@ button{
     transition:none!important;
   }
 }
-/* =========================================================
-   BIBLE PUZZLE
-========================================================= */
+/* BIBLE PUZZLE */
 
 .bible-reader-head{
   padding:5px 2px 16px;
@@ -1432,8 +1190,6 @@ button{
 }
 
 
-/* verse numbers */
-
 .verse-progress{
   display:flex;
 
@@ -1458,8 +1214,6 @@ button{
   border-bottom-color:#8e7a50;
 }
 
-
-/* answer + pool */
 
 .verse-answer,
 .verse-pool{
@@ -1495,8 +1249,6 @@ button{
   background:#24221e;
 }
 
-
-/* paper strips */
 
 .verse-piece{
   width:100%;
@@ -1554,8 +1306,6 @@ button{
 }
 
 
-/* buttons */
-
 .bible-actions{
   display:grid;
 
@@ -1578,8 +1328,6 @@ button{
 }
 
 
-/* completed */
-
 .bible-complete{
   padding:42px 4px 0;
 }
@@ -1587,9 +1335,7 @@ button{
 .bible-complete .primary-btn{
   margin-top:20px;
 }
-/* =========================================================
-   IMPORTANT CHAT CLUE
-========================================================= */
+/* IMPORTANT CHAT CLUE */
 
 .clue-pulse{
   cursor:pointer;
@@ -1625,9 +1371,7 @@ button{
   border-left:2px solid #70644d;
 }
 
-/* =========================================================
-   NEW OBJECTIVE POPUP
-========================================================= */
+/* NEW OBJECTIVE POPUP */
 
 .objective-popup{
   position:absolute;
@@ -1696,29 +1440,7 @@ button{
 }
 
 
-/* objective bar flashes once */
-
-.objective-bar.objective-flash{
-  animation:
-    objectiveFlash
-    .55s ease
-    3;
-}
-
-
-@keyframes objectiveFlash{
-
-  50%{
-    border-bottom-color:
-      #b89d62;
-
-    background:
-      rgba(184,157,98,.07);
-  }
-}
-/* =========================================================
-   MESSAGE QUICK REPLIES
-========================================================= */
+/* MESSAGE QUICK REPLIES */
 
 .quick-reply-label{
   margin:18px 0 8px;
@@ -1755,8 +1477,6 @@ button{
 
   border-color:#76684d;
 }
-/* hide scrollbar, keep scrolling */
-
 .screen{
   scrollbar-width:none;
   -ms-overflow-style:none;
@@ -1767,9 +1487,7 @@ button{
   width:0;
   height:0;
 }
-/* =========================================================
-   TIME PENALTY POPUP
-========================================================= */
+/* TIME PENALTY POPUP */
 
 .time-penalty-popup{
   position:absolute;
@@ -1832,168 +1550,7 @@ button{
   font-size:15px;
   font-weight:500;
 }
-/* ARCADE — SIGNAL RUSH */
-
-.arcade-head{
-  padding:6px 0 16px;
-  margin-bottom:18px;
-
-  border-bottom:
-    1px solid #403a3e;
-}
-
-.arcade-head small{
-  color:#9a7889;
-
-  font-size:8px;
-  font-weight:700;
-
-  letter-spacing:.14em;
-}
-
-.arcade-head h2{
-  margin:5px 0 4px;
-
-  font-size:21px;
-  font-weight:600;
-}
-
-.arcade-head p{
-  margin:0;
-
-  color:#999187;
-
-  font-size:10px;
-}
-
-
-.arcade-info{
-  display:flex;
-
-  justify-content:space-between;
-
-  margin-bottom:12px;
-
-  color:#847c78;
-
-  font-size:8px;
-}
-
-.arcade-info strong{
-  color:#b89cab;
-}
-
-
-.arcade-score{
-  display:flex;
-
-  justify-content:space-between;
-
-  margin-bottom:10px;
-
-  color:#91888b;
-
-  font-size:9px;
-}
-
-.arcade-score b{
-  color:#e0d8d5;
-}
-
-
-.signal-board{
-  display:grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
-  grid-template-rows:
-    repeat(3,1fr);
-
-  gap:7px;
-
-  aspect-ratio:1;
-
-  padding:8px;
-
-  border:
-    1px solid #443b40;
-
-  background:#272227;
-}
-
-
-.signal-cell{
-  border:
-    1px solid #443b40;
-
-  border-radius:3px;
-
-  background:#332c31;
-
-  transition:
-    transform .08s ease,
-    background .08s ease,
-    box-shadow .08s ease;
-}
-
-
-.signal-cell.active{
-  background:#9a7286;
-
-  border-color:#bb92a5;
-
-  box-shadow:
-    0 0 14px
-    rgba(169,116,142,.45);
-
-  transform:
-    scale(.95);
-}
-
-
-.signal-cell.miss{
-  background:#704b4b;
-
-  transform:
-    scale(.92);
-}
-
-
-.arcade-result-screen{
-  padding-top:10px;
-}
-
-.arcade-result-screen small{
-  color:#9a7889;
-
-  font-size:8px;
-  font-weight:700;
-
-  letter-spacing:.14em;
-}
-
-.arcade-result-screen h2{
-  margin:5px 0 10px;
-
-  font-size:32px;
-  font-weight:400;
-}
-
-.arcade-result-stats{
-  display:flex;
-
-  gap:18px;
-
-  margin-bottom:18px;
-
-  color:#918985;
-
-  font-size:9px;
-}
-/* =========================================================
-   ARCADE — 3 QUICK GAMES
-========================================================= */
+/* ARCADE — 3 QUICK GAMES */
 
 .arcade-menu-head,
 .arcade-game-head{
@@ -2107,8 +1664,6 @@ button{
   font-weight:600;
 }
 
-/* SIGNAL RUSH */
-
 .signal-board{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -2141,8 +1696,6 @@ button{
   background:#704b4b;
   transform:scale(.92);
 }
-
-/* MEMORY FLASH */
 
 .memory-board{
   display:grid;
@@ -2182,8 +1735,6 @@ button{
   border-color:#94625f;
   transform:scale(.94);
 }
-
-/* PERFECT STOP */
 
 .perfect-stop-wrap{
   padding-top:12px;
@@ -2233,8 +1784,6 @@ button{
   font-size:9px;
   text-align:center;
 }
-
-/* RESULT */
 
 .arcade-result-screen{
   padding-top:14px;
@@ -2286,9 +1835,83 @@ button{
 .arcade-result-actions .secondary-btn{
   margin:0;
 }
-/* =========================================================
-   BIBLE SEARCH
-========================================================= */
+
+/* BROWSER */
+
+.browser-search{
+  margin-bottom:16px;
+}
+
+.browser-search-box{
+  width:100%;
+  padding:10px 11px;
+  border:1px solid #454139;
+  border-radius:3px;
+  background:#2b2924;
+  color:#8d877c;
+  font-size:11px;
+}
+
+.browser-history-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 2px 7px;
+  border-bottom:1px solid #3b3832;
+}
+
+.browser-history-head strong{
+  color:#e1dbd0;
+  font-size:13px;
+  font-weight:600;
+}
+
+.browser-history-head small{
+  color:#777168;
+  font-size:7px;
+  letter-spacing:.12em;
+}
+
+.browser-history{
+  display:flex;
+  flex-direction:column;
+}
+
+.browser-history-row{
+  width:100%;
+  min-width:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  padding:10px 2px;
+  border:0;
+  border-bottom:1px solid #34312c;
+  border-radius:0;
+  background:transparent;
+  color:#d8d2c8;
+  text-align:left;
+}
+
+.browser-history-row span{
+  min-width:0;
+  overflow-wrap:anywhere;
+  font-size:10px;
+  line-height:1.35;
+}
+
+.browser-history-row small{
+  color:#777168;
+  font-size:8px;
+  white-space:nowrap;
+}
+
+.browser-history-row:active{
+  background:#302d28;
+}
+
+/* BIBLE SEARCH */
 
 .bible-search-head{
   padding:5px 2px 16px;
@@ -2508,234 +2131,160 @@ button{
 
   line-height:1.45;
 }
-/* =========================================================
-   GALLERY
-========================================================= */
+/* GALLERY */
 
 .gallery-head{
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
-
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
 .gallery-head small{
   color:#847e73;
-
   font-size:7px;
   font-weight:700;
-
   letter-spacing:.14em;
 }
 
 .gallery-head h2{
   margin:3px 0 0;
-
-  font-size:22px;
+  font-size:20px;
   font-weight:500;
 }
 
 .gallery-head > span{
-  margin-bottom:3px;
-
+  margin-bottom:2px;
   color:#817b70;
-
   font-size:8px;
 }
 
-
 .gallery-real-grid{
+  width:100%;
   display:grid;
-
-  grid-template-columns:
-    repeat(2, 1fr);
-
-  gap:4px;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:3px;
 }
-
 
 .gallery-thumb{
   position:relative;
-
+  display:block;
   width:100%;
+  min-width:0;
   aspect-ratio:1 / 1;
-
   padding:0;
-
   overflow:hidden;
-
   border:0;
-  border-radius:2px;
-
-  background:#25231f;
+  border-radius:0;
+  background:#292722;
 }
-
 
 .gallery-thumb img{
+  position:absolute;
+  inset:0;
+  display:block;
   width:100%;
   height:100%;
-
-  display:block;
-
   object-fit:cover;
 }
-
 
 .gallery-thumb:active img{
   opacity:.72;
 }
 
-
-/* fullscreen photo viewer */
-
 .gallery-viewer{
   position:absolute;
-
-  inset:0;
-
   z-index:500;
-
+  inset:0;
   display:flex;
   flex-direction:column;
-
-  background:#11110f;
-
+  overflow:hidden;
+  background:#090909;
   color:#e6e1d7;
 }
 
-
 .gallery-viewer-top{
-  min-height:60px;
-
+  flex:none;
+  min-height:66px;
   display:flex;
-  align-items:center;
-
-  gap:10px;
-
-  padding:
-    19px
-    12px
-    8px;
-
-  border-bottom:
-    1px solid rgba(255,255,255,.07);
-
-  background:#1b1a17;
+  align-items:flex-end;
+  gap:9px;
+  padding:23px 12px 9px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  background:#171613;
 }
-
 
 .gallery-viewer-top button{
   width:30px;
   height:30px;
-
   padding:0;
-
   border:0;
-
   background:transparent;
-
   color:#e4ded3;
-
   font-size:28px;
-  font-weight:300;
-
   line-height:1;
 }
 
-
 .gallery-viewer-top strong{
   display:block;
-
   font-size:10px;
   font-weight:500;
 }
 
-
 .gallery-viewer-top small{
   display:block;
-
   margin-top:2px;
-
   color:#817b72;
-
   font-size:7px;
 }
 
-
 .gallery-image-area{
   flex:1;
-
   min-height:0;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   overflow:hidden;
-
   touch-action:pan-y;
-
   background:#090909;
 }
 
-
 .gallery-image-area img{
+  display:block;
   max-width:100%;
   max-height:100%;
-
+  width:auto;
+  height:auto;
   object-fit:contain;
-
   user-select:none;
   -webkit-user-select:none;
 }
 
-
 .gallery-viewer-bottom{
+  flex:none;
   min-height:54px;
-
   display:grid;
-
-  grid-template-columns:
-    48px
-    1fr
-    48px;
-
+  grid-template-columns:48px 1fr 48px;
   align-items:center;
-
-  border-top:
-    1px solid rgba(255,255,255,.07);
-
-  background:#1b1a17;
-
+  border-top:1px solid rgba(255,255,255,.07);
+  background:#171613;
   text-align:center;
 }
 
-
 .gallery-viewer-bottom span{
   color:#706b63;
-
   font-size:7px;
   font-weight:700;
-
   letter-spacing:.14em;
 }
 
-
 .gallery-viewer-bottom button{
   height:100%;
-
   border:0;
-
   background:transparent;
-
   color:#d8d2c7;
-
   font-size:25px;
-  font-weight:300;
 }
-
 
 .gallery-viewer-bottom button:disabled{
   opacity:.2;

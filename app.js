@@ -9,7 +9,6 @@
     "lockScreen",
     "homeScreen",
     "appScreen",
-    "finalScreen",
     "winScreen",
     "failScreen"
   ];
@@ -38,18 +37,9 @@
       ibu: true,
       felicia: true,
       malachi: true
-    },
-
-    fragments: {},
-
-    feedIndex: 0,
-    feedLetters: []
+    }
   };
-
-
-  /* =========================================================
-     BASIC UI
-  ========================================================= */
+  // BASIC UI
 
   function showScreen(id) {
 
@@ -256,12 +246,7 @@
         1800
       );
   }
-
-
-
-  /* =========================================================
-     TIME SYSTEM
-  ========================================================= */
+  // TIME
 
   function getElapsedSeconds() {
 
@@ -405,7 +390,6 @@
       );
 
 
-    /* status bar */
 
     const statusClock =
       $("#clock");
@@ -417,7 +401,6 @@
     }
 
 
-    /* lock screen */
 
     const lockTime =
       $("#lockTime");
@@ -432,7 +415,6 @@
     }
 
 
-    /* Clock app */
 
     const normalClock =
       $("#normalClock");
@@ -463,8 +445,22 @@
         );
     }
 
+    const homeCountdown =
+      $("#countdown");
 
-    /* timer finished */
+    if (homeCountdown) {
+      const minutes =
+        Math.floor(remaining / 60);
+
+      const seconds =
+        remaining % 60;
+
+      homeCountdown.textContent =
+        `${String(minutes).padStart(2, "0")}:` +
+        `${String(seconds).padStart(2, "0")}`;
+    }
+
+
 
     if (
       state.unlockedAt &&
@@ -596,12 +592,7 @@
       "winScreen"
     );
   }
-
-
-
-  /* =========================================================
-     APPS
-  ========================================================= */
+  // APPS
 
   const apps = {
 
@@ -679,17 +670,18 @@
       root
     );
 
+    const appScreen =
+      $("#appScreen");
+
+    if (appScreen) {
+      appScreen.scrollTop = 0;
+    }
 
     showScreen(
       "appScreen"
     );
   }
-
-
-
-  /* =========================================================
-     CLOCK APP
-  ========================================================= */
+  // CLOCK
 
   function renderClockApp(root) {
 
@@ -841,12 +833,7 @@
 
     updateTimeUI();
   }
-
-
-
-  /* =========================================================
-     MESSAGES
-  ========================================================= */
+  // MESSAGES
 
   function updateMessageBadge() {
 
@@ -1756,12 +1743,7 @@
 
     updateMessageBadge();
   }
-
-
-
-  /* =========================================================
-     NOTES
-  ========================================================= */
+  // NOTES
 function renderNotes(root) {
 
   root.innerHTML = `
@@ -1842,12 +1824,7 @@ function renderNotes(root) {
     </div>
   `;
 }
-
-
-
-  /* =========================================================
-     GALLERY
-  ========================================================= */
+  // GALLERY
 function renderGallery(root) {
 
   const photos = [
@@ -2166,7 +2143,6 @@ function renderGallery(root) {
 
 
 
-    /* swipe kiri / kanan */
 
     const imageArea =
       $("#galleryImageArea", viewer);
@@ -2258,12 +2234,7 @@ function renderGallery(root) {
     draw();
   }
 }
-
-
-
-  /* =========================================================
-     BROWSER
-  ========================================================= */
+  // BROWSER
 
   function renderBrowser(root) {
 
@@ -2411,12 +2382,7 @@ function renderGallery(root) {
     }
   );
 }
-
-
-
-  /* =========================================================
-     BIBLE
-  ========================================================= */
+  // BIBLE
 
  function renderBible(root) {
 
@@ -2526,12 +2492,7 @@ function renderGallery(root) {
 
     return result;
   }
-
-
-
-  /* =========================================================
-     ALREADY FINISHED
-  ========================================================= */
+  // BIBLE COMPLETE
 
   if (state.bibleSolved) {
 
@@ -2578,12 +2539,7 @@ function renderGallery(root) {
 
     return;
   }
-
-
-
-  /* =========================================================
-     SEARCH HOME
-  ========================================================= */
+  // BIBLE SEARCH
 
   function showSearch() {
 
@@ -2788,12 +2744,7 @@ function renderGallery(root) {
 
     drawReferences();
   }
-
-
-
-  /* =========================================================
-     OTHER REFERENCES
-  ========================================================= */
+  // BIBLE REFERENCES
 
   function showOtherReference(
     reference
@@ -2847,12 +2798,7 @@ function renderGallery(root) {
         showSearch
       );
   }
-
-
-
-  /* =========================================================
-     LUKAS PUZZLE
-  ========================================================= */
+  // BIBLE PUZZLE
 
   function showPuzzle() {
 
@@ -3293,10 +3239,7 @@ function renderGallery(root) {
 
   showSearch();
 }
-
-  /* =========================================================
-     ARCADE
-  ========================================================= */
+  // ARCADE
 
   function renderArcade(root) {
 
@@ -3306,9 +3249,6 @@ function renderGallery(root) {
 
         name:
           "Signal Rush",
-
-        desc:
-          "Tap 8 sinyal secepat mungkin."
       },
 
 
@@ -3316,9 +3256,6 @@ function renderGallery(root) {
 
         name:
           "Memory Flash",
-
-        desc:
-          "Ingat pola lalu ulangi urutannya."
       },
 
 
@@ -3326,9 +3263,6 @@ function renderGallery(root) {
 
         name:
           "Perfect Stop",
-
-        desc:
-          "Hentikan marker tepat di zona target."
       }
     };
 
@@ -3389,12 +3323,7 @@ function renderGallery(root) {
         30
       );
     }
-
-
-
-    /* ===============================
-       ARCADE MENU
-    =============================== */
+  // ARCADE MENU
 
     function showMenu() {
 
@@ -3540,12 +3469,7 @@ function renderGallery(root) {
         }
       );
     }
-
-
-
-    /* ===============================
-       RESULT SCREEN
-    =============================== */
+  // RESULT SCREEN
 
     function showResult(
       key,
@@ -3623,12 +3547,7 @@ function renderGallery(root) {
           showMenu
         );
     }
-
-
-
-    /* ===============================
-       GAME 1 — SIGNAL RUSH
-    =============================== */
+  // GAME 1 — SIGNAL RUSH
 
     function runSignalRush() {
 
@@ -3879,12 +3798,7 @@ function renderGallery(root) {
 
       nextSignal();
     }
-
-
-
-    /* ===============================
-       GAME 2 — MEMORY FLASH
-    =============================== */
+  // GAME 2 — MEMORY FLASH
 
     function runMemoryFlash() {
 
@@ -4293,12 +4207,7 @@ function renderGallery(root) {
 
       playSequence();
     }
-
-
-
-    /* ===============================
-       GAME 3 — PERFECT STOP
-    =============================== */
+  // GAME 3 — PERFECT STOP
 
     function runPerfectStop() {
 
@@ -4705,12 +4614,7 @@ function renderGallery(root) {
 
     showMenu();
   }
-
-
-
-  /* =========================================================
-     FILES
-  ========================================================= */
+  // FILES
 
  function renderFiles(root) {
 
@@ -4785,12 +4689,7 @@ function renderGallery(root) {
     }
   );
 }
-
-
-
-  /* =========================================================
-     SETTINGS
-  ========================================================= */
+  // SETTINGS
 function renderSettings(root) {
 
   const settings = [
@@ -4863,167 +4762,7 @@ function renderSettings(root) {
     }
   );
 }
-
-
-
-  /* =========================================================
-     OLD FRAGMENTS SYSTEM
-  ========================================================= */
-
-  function addFragment(
-    key,
-    value
-  ) {
-
-    if (
-      state.fragments[
-        key
-      ]
-    ) {
-
-      return;
-    }
-
-
-    state.fragments[key] =
-      value;
-
-
-    toast(
-      `Informasi ditemukan: ${value}`
-    );
-
-
-    if (
-      Object.keys(
-        state.fragments
-      ).length ===
-      4
-    ) {
-
-      setTimeout(
-        openFinal,
-        700
-      );
-    }
-  }
-
-
-  function openFinal() {
-
-    const slots =
-      $("#fragmentSlots");
-
-
-    if (!slots) {
-      return;
-    }
-
-
-    slots.innerHTML =
-      "";
-
-
-    [
-      "F1",
-      "F2",
-      "F3",
-      "F4"
-    ].forEach(
-      key => {
-
-        const slot =
-          document.createElement(
-            "div"
-          );
-
-
-        slot.className =
-          "fragment-slot";
-
-
-        slot.textContent =
-          state.fragments[key] ||
-          "?";
-
-
-        slots.appendChild(
-          slot
-        );
-      }
-    );
-
-
-    showScreen(
-      "finalScreen"
-    );
-  }
-
-
-  const submitFinal =
-    $("#submitFinal");
-
-
-  if (
-    submitFinal
-  ) {
-
-    submitFinal.addEventListener(
-      "click",
-      () => {
-
-        const value =
-          $("#finalCode")
-            .value
-            .trim()
-            .toUpperCase()
-            .replace(
-              /[^A-Z]/g,
-              ""
-            );
-
-
-        if (
-          value ===
-          "KEMBALI"
-        ) {
-
-          if (
-            state.gameTicker
-          ) {
-
-            clearInterval(
-              state.gameTicker
-            );
-          }
-
-
-          showScreen(
-            "winScreen"
-          );
-
-        } else {
-
-          const feedback =
-            $("#finalFeedback");
-
-
-          feedback.textContent =
-            "Password salah. Ingat A=1, B=2, C=3 ...";
-
-
-          feedback.style.color =
-            "#ff6f86";
-        }
-      }
-    );
-  }
-
-
-
-  /* =========================================================
-     FULL-SCREEN SWIPE UNLOCK
-  ========================================================= */
+  // UNLOCK
 
   const lockScreen =
     $("#lockScreen");
@@ -5129,7 +4868,6 @@ function renderSettings(root) {
       100
     ) {
 
-      /* ENTER FULLSCREEN */
 
       const fullscreenTarget =
         document.documentElement;
@@ -5171,13 +4909,11 @@ function renderSettings(root) {
             error
           ) {
 
-            /* game works without fullscreen */
           }
         }
       }
 
 
-      /* unlock animation */
 
       lockScreen.style.transition =
         "transform .28s ease";
@@ -5227,12 +4963,7 @@ function renderSettings(root) {
     "pointercancel",
     endSwipe
   );
-
-
-
-  /* =========================================================
-     NAVIGATION
-  ========================================================= */
+  // NAVIGATION
 
   $("#backHome")
     .addEventListener(
@@ -5262,12 +4993,7 @@ function renderSettings(root) {
       );
     }
   );
-
-
-
-  /* =========================================================
-     HINT BUTTON
-  ========================================================= */
+  // HINT
 
   $("#hintBtn")
     .addEventListener(
@@ -5279,27 +5005,7 @@ function renderSettings(root) {
         );
       }
     );
-
-
-
-  /* =========================================================
-     RESTART
-  ========================================================= */
-
-  $("#restartBtn")
-    .addEventListener(
-      "click",
-      () => {
-
-        location.reload();
-      }
-    );
-
-
-
-  /* =========================================================
-     INITIAL STATE
-  ========================================================= */
+  // INIT
 
   updateTimeUI();
 
