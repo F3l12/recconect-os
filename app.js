@@ -21,6 +21,7 @@
     unlockedAt: null,
     gameTicker: null,
     timerExpiredNotified: false,
+    bibleSolved: false,
     unreadChats: {
   ibu: true,
   felicia: true,
@@ -364,7 +365,7 @@
             letter-spacing:-1px;
           "
         >
-          00:12:00
+          00:05:00
         </div>
 
         <div
@@ -438,7 +439,7 @@
      masih versi lama dulu — nanti kita rombak
   ========================================================= */
 
-  function updateMessageBadge() {
+ function updateMessageBadge() {
 
   const badge =
     document.querySelector(
@@ -447,24 +448,16 @@
 
   if (!badge) return;
 
-
   const unreadCount =
     Object.values(
       state.unreadChats
     ).filter(Boolean).length;
 
-
   if (unreadCount > 0) {
-
-    badge.textContent =
-      unreadCount;
-
+    badge.textContent = unreadCount;
     badge.style.display = "";
-
   } else {
-
-    badge.style.display =
-      "none";
+    badge.style.display = "none";
   }
 }
 
@@ -480,98 +473,87 @@ function renderMessages(root) {
       time: "23:41",
 
       messages: [
-        [
-          "them",
-          "Besok Sekolah Minggu kan?"
-        ],
-
-        [
-          "them",
-          "Jangan lupa tidur lebih cepat ya. Sebelum jam 12."
-        ],
-
-        [
-          "me",
-          "Iya ma, bentar lagi."
-        ],
-
-        [
-          "them",
-          "Jangan 'bentar lagi' terus 😭"
-        ]
+        ["them", "Besok Sekolah Minggu kan?"],
+        ["them", "Jangan lupa tidur lebih cepat ya. Sebelum jam 12."],
+        ["me", "iyaa ma"],
+        ["me", "bentar lagi tidur"],
+        ["them", "Jangan bentar lagi terus 😭"]
       ]
     },
 
 
     felicia: {
       name: "Felicia",
-      preview: "Games besok udah aman?",
-      time: "23:35",
+      preview: "ya baca dulu sana 😭",
+      time: "23:54",
 
       messages: [
-        [
-          "them",
-          "Games besok udah aman?"
-        ],
 
-        [
-          "me",
-          "Masih gue beresin."
-        ],
+        /* chat lama / filler */
 
-        [
-          "them",
-          "Yang penting jangan cuma quiz biasa wkwk"
-        ],
+        ["them", "oi"],
+        ["me", "apaa"],
+        ["them", "besok kumpul jam brp"],
+        ["me", "730 bukan"],
+        ["them", "iya"],
+        ["me", "gw kemungkinan telat dikit"],
+        ["them", "jgn."],
 
-        [
-          "them",
-          "Kan temanya soal kita gampang ke-distract teknologi."
-        ],
+        ["them", "AOSGALEGLSGR"],
+        ["me", "apaan jir"],
+        ["them", "kepencet 😭"],
 
-        [
-          "me",
-          "Iya, pengennya mereka ngerasain sendiri."
-        ],
+        ["me", "ppt siapa yg pegang"],
+        ["them", "malachi"],
+        ["me", "udah jadi?"],
+        ["them", "harusnya udh"],
 
-        [
-          "them",
-          "Sip. Besok tinggal nyambung ke Lukas 15."
-        ]
+        ["them", "lu jangan lupa games ya"],
+        ["me", "iya aman"],
+
+        /* chat terbaru */
+
+        ["me", "fel"],
+        ["me", "games besok gmn sih akhirnya"],
+
+        ["them", "lah"],
+        ["them", "kan lu bagian games 😭"],
+
+        ["me", "iyaa"],
+        ["me", "maksud gw penutupnya"],
+        ["me", "gw masih bingung mau nyambunginnya ke apa"],
+
+        ["them", "ke firman besok lah"],
+
+        ["me", "yang mana"],
+
+        ["them", "Lukas 15"],
+        ["them", "yang anak hilang"],
+
+        ["me", "bagian mana tepatnya"],
+
+        ["them", "21-22 sama 24 paling kepake"],
+
+        ["me", "gw blm baca 💀"],
+        ["me", "sbr gw baca dulu"],
+
+        ["them", "ya baca dulu sana 😭"]
       ]
     },
 
 
     malachi: {
       name: "Malachi",
-      preview: "Ayat Lukas 15 udah gue masukin...",
-      time: "23:28",
+      preview: "ppt udah aman",
+      time: "23:27",
 
       messages: [
-        [
-          "them",
-          "PPT hampir selesai."
-        ],
-
-        [
-          "them",
-          "Ayat Lukas 15 udah gue masukin juga."
-        ],
-
-        [
-          "me",
-          "Bagian yang anak bungsunya sadar terus balik kan?"
-        ],
-
-        [
-          "them",
-          "Yep."
-        ],
-
-        [
-          "them",
-          "Lu cek lagi aja nanti sebelum tidur."
-        ]
+        ["me", "chi ppt gmn"],
+        ["them", "udah aman"],
+        ["me", "ayat udh masuk?"],
+        ["them", "udah"],
+        ["them", "Lukas 15"],
+        ["me", "ok makasih"]
       ]
     }
   };
@@ -594,7 +576,6 @@ function renderMessages(root) {
       ></div>
     `;
 
-
     const list =
       $("#messageList", root);
 
@@ -605,19 +586,14 @@ function renderMessages(root) {
         const unread =
           state.unreadChats[id];
 
-
         const row =
-          document.createElement(
-            "button"
-          );
+          document.createElement("button");
 
-        row.type =
-          "button";
+        row.type = "button";
 
         row.className =
           "thread-row" +
           (unread ? " unread" : "");
-
 
         row.innerHTML = `
           <div class="thread-avatar">
@@ -627,15 +603,8 @@ function renderMessages(root) {
           <div class="thread-main">
 
             <div class="thread-top">
-
-              <strong>
-                ${chat.name}
-              </strong>
-
-              <small>
-                ${chat.time}
-              </small>
-
+              <strong>${chat.name}</strong>
+              <small>${chat.time}</small>
             </div>
 
             <div class="thread-preview">
@@ -661,9 +630,7 @@ function renderMessages(root) {
 
             updateMessageBadge();
 
-            showConversation(
-              id
-            );
+            showConversation(id);
           }
         );
 
@@ -699,14 +666,16 @@ function renderMessages(root) {
             ${chat.name[0]}
           </div>
 
-          <strong>
-            ${chat.name}
-          </strong>
+          <strong>${chat.name}</strong>
         </div>
 
         <div
           class="chat"
           id="conversationChat"
+        ></div>
+
+        <div
+          id="quickReplyArea"
         ></div>
 
       </div>
@@ -721,9 +690,7 @@ function renderMessages(root) {
       ([who, text]) => {
 
         const bubble =
-          document.createElement(
-            "div"
-          );
+          document.createElement("div");
 
         bubble.className =
           "bubble " + who;
@@ -738,6 +705,45 @@ function renderMessages(root) {
     );
 
 
+    /* Felicia memberi arah ke Bible */
+
+    if (id === "felicia") {
+
+      const objective =
+        $("#objectiveText");
+
+      if (
+        objective &&
+        !state.bibleSolved
+      ) {
+        objective.textContent =
+          "Baca Lukas 15:21–22 dan 24.";
+      }
+
+
+      /*
+        NANTI setelah Bible puzzle selesai,
+        state.bibleSolved akan jadi true.
+        Baru quick replies muncul di sini.
+      */
+
+      if (state.bibleSolved) {
+        renderFeliciaReplies();
+      }
+    }
+
+
+    /*
+      otomatis scroll ke chat terbaru
+      supaya pemain nggak mulai dari chat lama
+    */
+
+    requestAnimationFrame(() => {
+      root.scrollTop =
+        root.scrollHeight;
+    });
+
+
     $("#backInbox", root)
       .addEventListener(
         "click",
@@ -746,10 +752,101 @@ function renderMessages(root) {
   }
 
 
+
+  function renderFeliciaReplies() {
+
+    const area =
+      $("#quickReplyArea", root);
+
+    if (!area) return;
+
+    area.innerHTML = `
+      <div class="quick-reply-label">
+        Felicia: jadi penutupnya apa?
+      </div>
+
+      <button
+        class="quick-reply"
+        data-answer="wrong"
+        type="button"
+      >
+        Berarti teknologi harus dijauhi.
+      </button>
+
+      <button
+        class="quick-reply"
+        data-answer="correct"
+        type="button"
+      >
+        Kalau hal lain mulai membuat kita melupakan Tuhan,
+        kita perlu kembali memprioritaskan Tuhan.
+      </button>
+
+      <button
+        class="quick-reply"
+        data-answer="wrong"
+        type="button"
+      >
+        Intinya kita harus mengurangi screen time.
+      </button>
+    `;
+
+
+    $$(".quick-reply", area)
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            if (
+              button.dataset.answer ===
+              "correct"
+            ) {
+
+              area.innerHTML = `
+                <div class="bubble me">
+                  Kalau hal lain mulai membuat kita
+                  melupakan Tuhan, kita perlu kembali
+                  memprioritaskan Tuhan.
+                </div>
+
+                <div class="bubble them">
+                  nah iya
+                </div>
+
+                <div class="bubble them">
+                  pake itu aja besok
+                </div>
+              `;
+
+              /*
+                NANTI:
+                finishGame();
+              */
+
+            } else {
+
+              const reply =
+                document.createElement("div");
+
+              reply.className =
+                "bubble them";
+
+              reply.textContent =
+                "bukan gitu 😭 coba baca lagi inti ayatnya";
+
+              area.prepend(reply);
+            }
+          }
+        );
+      });
+  }
+
+
   showInbox();
   updateMessageBadge();
 }
-
 
 
   /* =========================================================
