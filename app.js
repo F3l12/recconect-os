@@ -1852,37 +1852,37 @@ function renderGallery(root) {
 
   const photos = [
 
-    {
-      src: "./assets/gallery/chudGhost.jpg",
-      name: "IMG_2841.jpg"
-    },
+  {
+    src: "./chudGhost.jpg",
+    name: "IMG_2841.jpg"
+  },
 
-    {
-      src: "./assets/gallery/hampter67.jpg",
-      name: "IMG_2845.jpg"
-    },
+  {
+    src: "./hampter67.jpg",
+    name: "IMG_2845.jpg"
+  },
 
-    {
-      src: "./assets/gallery/muehehheCat.jpg",
-      name: "IMG_2850.jpg"
-    },
+  {
+    src: "./muehehheCat.jpg",
+    name: "IMG_2850.jpg"
+  },
 
-    {
-      src: "./assets/gallery/ghostHousedude.jpg",
-      name: "IMG_2853.jpg"
-    },
+  {
+    src: "./ghostHousedude.jpg",
+    name: "IMG_2853.jpg"
+  },
 
-    {
-      src: "./assets/gallery/hampterRage.jpg",
-      name: "IMG_2857.jpg"
-    },
+  {
+    src: "./hampterRage.jpg",
+    name: "IMG_2857.jpg"
+  },
 
-    {
-      src: "./assets/gallery/beemoviethanos.jpg",
-      name: "IMG_2862.jpg"
-    }
+  {
+    src: "./beemoviethanos.jpg",
+    name: "IMG_2862.jpg"
+  }
 
-  ];
+];
 
 
   root.innerHTML = `
