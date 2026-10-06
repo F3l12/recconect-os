@@ -1,6 +1,3 @@
-from pathlib import Path
-
-css = r'''
 :root{
   --bg:#201f1b;
   --surface:#2a2823;
@@ -1394,8 +1391,3 @@ button{
     transition:none!important;
   }
 }
-'''.strip() + "\n"
-
-out = Path("/mnt/data/styles_updated.css")
-out.write_text(css)
-print(f"Created {out} with {len(css.splitlines())} lines.")
