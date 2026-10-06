@@ -67,7 +67,70 @@
       toastBox.classList.remove("show");
     }, 2200);
   }
+function showObjectivePopup(text) {
 
+  const phone =
+    $("#phone");
+
+  if (!phone) return;
+
+
+  let popup =
+    $("#objectivePopup");
+
+
+  if (!popup) {
+
+    popup =
+      document.createElement("div");
+
+    popup.id =
+      "objectivePopup";
+
+    popup.className =
+      "objective-popup";
+
+    phone.appendChild(
+      popup
+    );
+  }
+
+
+  popup.innerHTML = `
+    <small>OBJECTIVE BARU</small>
+    <strong>${text}</strong>
+  `;
+
+
+  popup.classList.remove(
+    "show"
+  );
+
+
+  requestAnimationFrame(
+    () => {
+      popup.classList.add(
+        "show"
+      );
+    }
+  );
+
+
+  clearTimeout(
+    popup.hideTimer
+  );
+
+
+  popup.hideTimer =
+    setTimeout(
+      () => {
+        popup.classList.remove(
+          "show"
+        );
+      },
+      2400
+    );
+}
 
   /* =========================================================
      TIME SYSTEM
