@@ -145,7 +145,7 @@
     const lockTime = $("#lockTime");
 
     if (lockTime && !state.unlockedAt) {
-      lockTime.textContent = "23:48";
+      lockTime.textContent = "23:55";
     }
 
 
@@ -334,7 +334,7 @@
             letter-spacing:-1px;
           "
         >
-          23:48:00
+          23:55:00
         </div>
 
         <div
