@@ -770,33 +770,12 @@ function renderMessages(root) {
     );
 
 
-    /* Felicia memberi arah ke Bible */
-
-    if (id === "felicia") {
-
-      const objective =
-        $("#objectiveText");
-
-      if (
-        objective &&
-        !state.bibleSolved
-      ) {
-        objective.textContent =
-          "Baca Lukas 15:21–22 dan 24.";
-      }
-
-
-      /*
-        NANTI setelah Bible puzzle selesai,
-        state.bibleSolved akan jadi true.
-        Baru quick replies muncul di sini.
-      */
-
-      if (state.bibleSolved) {
-        renderFeliciaReplies();
-      }
-    }
-
+    if (
+  id === "felicia" &&
+  state.bibleSolved
+) {
+  renderFeliciaReplies();
+}
 
     /*
       otomatis scroll ke chat terbaru
