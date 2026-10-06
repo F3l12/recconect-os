@@ -1575,37 +1575,40 @@ function renderMessages(root) {
 
     if (swipeDistance >= 100) {
 
-  /* ENTER FULLSCREEN */
+ /* ENTER FULLSCREEN
+   fullscreen PAGE, not the phone itself
+*/
 
-  const phoneEl = $("#phone");
+const fullscreenTarget =
+  document.documentElement;
 
-  if (phoneEl && !document.fullscreenElement) {
+if (!document.fullscreenElement) {
 
-    const enterFullscreen =
-      phoneEl.requestFullscreen ||
-      phoneEl.webkitRequestFullscreen;
+  const enterFullscreen =
+    fullscreenTarget.requestFullscreen ||
+    fullscreenTarget.webkitRequestFullscreen;
 
-    if (enterFullscreen) {
+  if (enterFullscreen) {
 
-      try {
+    try {
 
-        const result =
-          enterFullscreen.call(phoneEl);
+      const result =
+        enterFullscreen.call(
+          fullscreenTarget
+        );
 
-        if (
-          result &&
-          typeof result.catch === "function"
-        ) {
-          result.catch(() => {});
-        }
-
-      } catch (error) {
-        // kalau browser tidak support,
-        // game tetap lanjut normal
+      if (
+        result &&
+        typeof result.catch === "function"
+      ) {
+        result.catch(() => {});
       }
+
+    } catch (error) {
+      /* game still works without fullscreen */
     }
   }
-
+}
 
   /* UNLOCK ANIMATION */
 
