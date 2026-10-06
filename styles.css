@@ -1407,3 +1407,21 @@ body{min-height:100vh}
 
   font-size:8px;
 }
+/* =========================================================
+   LOCK SCREEN — same visual language as home
+========================================================= */
+
+#lockScreen{
+  background-color:#29261f;
+
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+
+  color:#ded9ce;
+}
+
+#lockTime{
+  color:#e4dfd4;
+  text-shadow:none;
+  font-weight:300;
+  letter-spacing:-2px;
+}
