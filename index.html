@@ -22,36 +22,68 @@
       </div>
 
       <!-- LOCK SCREEN -->
-      <section id="lockScreen" class="screen lock-screen active">
-        <div class="lock-content">
-          <div class="lock-time" id="lockTime">23:48</div>
-          <div class="lock-date">Sabtu, 3 Oktober</div>
+     <section id="lockScreen" class="screen lock-screen active">
 
-          <div class="lock-notifications">
-            <article class="lock-notif">
-  <div class="app-badge msg">M</div>
-  <div>
-    <b>Ibu</b>
-    <p>Jangan lupa tidur lebih cepat ya (sebelum 12:00). Besok Sekolah Minggu.</p>
+  <div class="lock-top">
+    <div class="lock-date">Sabtu, 3 Oktober</div>
+
+    <div class="lock-time" id="lockTime">
+      23:55
+    </div>
+
+    <div class="lock-subtitle">
+      Sekolah Minggu besok
+    </div>
   </div>
-            </article>
-            <article class="lock-notif">
-              <div class="app-badge game">G</div>
-              <div>
-                <b>DAILY QUEST</b>
-                <p>Reward berakhir dalam 12 menit.</p>
-              </div>
-            </article>
-          </div>
+
+
+  <div class="lock-notifications">
+
+    <article class="lock-notif">
+      <div class="app-badge msg">M</div>
+
+      <div class="lock-notif-body">
+        <div class="lock-notif-head">
+          <b>Ibu</b>
+          <small>23:41</small>
         </div>
 
-        
-        <button id="unlockBtn" class="swipe-button" type="button">
-          <span>⌃</span>
-          Geser pikiranmu, bukan layarnya — tap untuk unlock
-        </button>
-      </section>
+        <p>
+          Jangan lupa tidur lebih cepat ya
+          (sebelum 12:00). Besok Sekolah Minggu.
+        </p>
+      </div>
+    </article>
 
+
+    <article class="lock-notif game-notif">
+      <div class="app-badge game">G</div>
+
+      <div class="lock-notif-body">
+        <div class="lock-notif-head">
+          <b>Arcade</b>
+          <small>23:53</small>
+        </div>
+
+        <p>
+          Daily reward masih tersedia.
+        </p>
+      </div>
+    </article>
+
+  </div>
+
+
+  <button
+    id="unlockBtn"
+    class="swipe-button"
+    type="button"
+  >
+    <span class="swipe-line"></span>
+    <small>GESER KE ATAS UNTUK MEMBUKA</small>
+  </button>
+
+</section>
       <!-- HOME -->
       <section id="homeScreen" class="screen home-screen">
         <div class="objective-bar">
