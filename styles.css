@@ -1768,193 +1768,6 @@ button{
   height:0;
 }
 /* =========================================================
-   ARCADE — SIGNAL RUSH
-========================================================= */
-
-.arcade-head{
-  padding:5px 2px 16px;
-
-  border-bottom:
-    1px solid #40383e;
-
-  margin-bottom:18px;
-}
-
-.arcade-head small{
-  color:#987889;
-
-  font-size:8px;
-  font-weight:700;
-
-  letter-spacing:.14em;
-}
-
-.arcade-head h2{
-  margin:5px 0 4px;
-
-  font-size:21px;
-  font-weight:600;
-}
-
-.arcade-head p{
-  margin:0;
-
-  color:#999286;
-
-  font-size:10px;
-  line-height:1.45;
-}
-
-
-.arcade-record{
-  display:flex;
-
-  justify-content:space-between;
-
-  margin-bottom:12px;
-
-  padding:10px 2px;
-
-  border-bottom:
-    1px solid #39343a;
-
-  color:#80777c;
-
-  font-size:8px;
-}
-
-
-.arcade-record strong{
-  color:#b59aa8;
-
-  font-weight:600;
-}
-
-
-.arcade-score{
-  display:flex;
-
-  justify-content:space-between;
-
-  margin-bottom:10px;
-
-  color:#8f858a;
-
-  font-size:9px;
-}
-
-
-.arcade-score b{
-  color:#ded5da;
-
-  font-weight:600;
-}
-
-
-.signal-board{
-  display:grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
-  grid-template-rows:
-    repeat(3,1fr);
-
-  gap:7px;
-
-  aspect-ratio:1;
-
-  padding:8px;
-
-  background:#252126;
-
-  border:
-    1px solid #433a40;
-}
-
-
-.signal-cell{
-  border:
-    1px solid #423a3f;
-
-  border-radius:3px;
-
-  background:#302a2e;
-
-  box-shadow:
-    inset 0 1px
-    rgba(255,255,255,.025);
-
-  transition:
-    background .08s,
-    transform .08s,
-    box-shadow .08s;
-}
-
-
-.signal-cell.active{
-  background:#987486;
-
-  border-color:#b48d9f;
-
-  box-shadow:
-    0 0 13px
-    rgba(166,116,140,.45),
-    inset 0 0 0 2px
-    rgba(255,255,255,.06);
-
-  transform:
-    scale(.96);
-}
-
-
-.signal-cell.miss{
-  background:#704c4a;
-
-  transform:
-    scale(.94);
-}
-
-
-.arcade-result-screen{
-  padding-top:14px;
-}
-
-
-.arcade-result-screen small{
-  color:#987889;
-
-  font-size:8px;
-  font-weight:700;
-
-  letter-spacing:.14em;
-}
-
-
-.arcade-result-screen h2{
-  margin:4px 0 10px;
-
-  font-size:32px;
-  font-weight:400;
-
-  letter-spacing:-1px;
-}
-
-
-.arcade-result-stats{
-  display:flex;
-
-  gap:16px;
-
-  margin-bottom:18px;
-
-  color:#8d8580;
-
-  font-size:9px;
-}
-
-
-/* =========================================================
    TIME PENALTY POPUP
 ========================================================= */
 
@@ -2018,4 +1831,163 @@ button{
 
   font-size:15px;
   font-weight:500;
+}
+/* ARCADE — SIGNAL RUSH */
+
+.arcade-head{
+  padding:6px 0 16px;
+  margin-bottom:18px;
+
+  border-bottom:
+    1px solid #403a3e;
+}
+
+.arcade-head small{
+  color:#9a7889;
+
+  font-size:8px;
+  font-weight:700;
+
+  letter-spacing:.14em;
+}
+
+.arcade-head h2{
+  margin:5px 0 4px;
+
+  font-size:21px;
+  font-weight:600;
+}
+
+.arcade-head p{
+  margin:0;
+
+  color:#999187;
+
+  font-size:10px;
+}
+
+
+.arcade-info{
+  display:flex;
+
+  justify-content:space-between;
+
+  margin-bottom:12px;
+
+  color:#847c78;
+
+  font-size:8px;
+}
+
+.arcade-info strong{
+  color:#b89cab;
+}
+
+
+.arcade-score{
+  display:flex;
+
+  justify-content:space-between;
+
+  margin-bottom:10px;
+
+  color:#91888b;
+
+  font-size:9px;
+}
+
+.arcade-score b{
+  color:#e0d8d5;
+}
+
+
+.signal-board{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  grid-template-rows:
+    repeat(3,1fr);
+
+  gap:7px;
+
+  aspect-ratio:1;
+
+  padding:8px;
+
+  border:
+    1px solid #443b40;
+
+  background:#272227;
+}
+
+
+.signal-cell{
+  border:
+    1px solid #443b40;
+
+  border-radius:3px;
+
+  background:#332c31;
+
+  transition:
+    transform .08s ease,
+    background .08s ease,
+    box-shadow .08s ease;
+}
+
+
+.signal-cell.active{
+  background:#9a7286;
+
+  border-color:#bb92a5;
+
+  box-shadow:
+    0 0 14px
+    rgba(169,116,142,.45);
+
+  transform:
+    scale(.95);
+}
+
+
+.signal-cell.miss{
+  background:#704b4b;
+
+  transform:
+    scale(.92);
+}
+
+
+.arcade-result-screen{
+  padding-top:10px;
+}
+
+.arcade-result-screen small{
+  color:#9a7889;
+
+  font-size:8px;
+  font-weight:700;
+
+  letter-spacing:.14em;
+}
+
+.arcade-result-screen h2{
+  margin:5px 0 10px;
+
+  font-size:32px;
+  font-weight:400;
+}
+
+.arcade-result-stats{
+  display:flex;
+
+  gap:18px;
+
+  margin-bottom:18px;
+
+  color:#918985;
+
+  font-size:9px;
 }
