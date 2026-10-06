@@ -2185,169 +2185,443 @@
      BIBLE
   ========================================================= */
 
-  function renderBible(root) {
+ function renderBible(root) {
 
-    const verses = [
+  const verses = [
 
-      {
-        number:
-          "21",
+    {
+      number: "21",
 
-        pieces: [
+      pieces: [
+        "Ayah, kata anak itu,",
+        "aku sudah berdosa terhadap Allah",
+        "dan terhadap Ayah.",
+        "Tidak layak lagi",
+        "aku disebut anak Ayah."
+      ]
+    },
 
-          "Ayah, kata anak itu,",
+    {
+      number: "22",
 
-          "aku sudah berdosa terhadap Allah",
+      pieces: [
+        "Tetapi ayahnya memanggil pelayan-pelayannya",
+        "dan berkata, Cepat!",
+        "Ambillah pakaian yang paling bagus",
+        "dan pakaikanlah kepadanya.",
+        "Kenakanlah cincin pada jarinya",
+        "dan sepatu pada kakinya."
+      ]
+    },
 
-          "dan terhadap Ayah.",
+    {
+      number: "24",
 
-          "Tidak layak lagi",
+      pieces: [
+        "Sebab anakku ini sudah mati,",
+        "sekarang hidup lagi;",
+        "ia sudah hilang,",
+        "sekarang ditemukan kembali.",
+        "Lalu mulailah mereka berpesta."
+      ]
+    }
 
-          "aku disebut anak Ayah."
-        ]
-      },
-
-
-      {
-        number:
-          "22",
-
-        pieces: [
-
-          "Tetapi ayahnya memanggil pelayan-pelayannya",
-
-          "dan berkata, Cepat!",
-
-          "Ambillah pakaian yang paling bagus",
-
-          "dan pakaikanlah kepadanya.",
-
-          "Kenakanlah cincin pada jarinya",
-
-          "dan sepatu pada kakinya."
-        ]
-      },
-
-
-      {
-        number:
-          "24",
-
-        pieces: [
-
-          "Sebab anakku ini sudah mati,",
-
-          "sekarang hidup lagi;",
-
-          "ia sudah hilang,",
-
-          "sekarang ditemukan kembali.",
-
-          "Lalu mulailah mereka berpesta."
-        ]
-      }
-    ];
+  ];
 
 
-    function shuffle(array) {
+  const references = [
 
-      const result =
-        [...array];
+    {
+      id: "mazmur",
+      title: "Mazmur 23",
+      meta: "Mazmur · 6 ayat"
+    },
 
+    {
+      id: "amsal",
+      title: "Amsal 3:5–6",
+      meta: "Amsal · 2 ayat"
+    },
 
-      for (
-        let i =
-          result.length -
-          1;
+    {
+      id: "lukas",
+      title: "Lukas 15:21–22, 24",
+      meta: "Lukas · Anak yang Hilang"
+    },
 
-        i >
-        0;
+    {
+      id: "yohanes",
+      title: "Yohanes 15:5",
+      meta: "Yohanes · 1 ayat"
+    }
 
-        i--
-      ) {
-
-        const j =
-          Math.floor(
-            Math.random() *
-            (
-              i +
-              1
-            )
-          );
-
-
-        [
-          result[i],
-          result[j]
-        ] = [
-          result[j],
-          result[i]
-        ];
-      }
+  ];
 
 
-      return result;
+
+  function shuffle(array) {
+
+    const result =
+      [...array];
+
+
+    for (
+      let i =
+        result.length - 1;
+
+      i > 0;
+
+      i--
+    ) {
+
+      const j =
+        Math.floor(
+          Math.random() *
+          (i + 1)
+        );
+
+
+      [
+        result[i],
+        result[j]
+      ] = [
+        result[j],
+        result[i]
+      ];
     }
 
 
+    return result;
+  }
 
-    /* ===============================
-       ALL VERSES FINISHED
-    =============================== */
+
+
+  /* =========================================================
+     ALREADY FINISHED
+  ========================================================= */
+
+  if (state.bibleSolved) {
+
+    root.innerHTML = `
+      <div class="bible-reader-head">
+
+        <small>
+          LUKAS 15
+        </small>
+
+        <h2>
+          Ayat selesai diperbaiki.
+        </h2>
+
+        <p>
+          Kamu sudah membaca bagian
+          yang Felicia maksud.
+        </p>
+
+      </div>
+
+
+      <button
+        id="backToMessages"
+        class="primary-btn"
+        type="button"
+      >
+        Kembali ke Messages
+      </button>
+    `;
+
+
+    $("#backToMessages", root)
+      .addEventListener(
+        "click",
+        () => {
+
+          openApp(
+            "messages"
+          );
+        }
+      );
+
+
+    return;
+  }
+
+
+
+  /* =========================================================
+     SEARCH HOME
+  ========================================================= */
+
+  function showSearch() {
+
+    root.innerHTML = `
+      <div class="bible-search-head">
+
+        <small>
+          BIBLE
+        </small>
+
+        <h2>
+          Cari ayat
+        </h2>
+
+      </div>
+
+
+      <div class="bible-search-wrap">
+
+        <input
+          id="bibleSearch"
+          class="bible-search-input"
+          type="text"
+          placeholder="Cari kitab atau ayat..."
+          autocomplete="off"
+          ${
+            state.verseClueOpened
+              ? ""
+              : "disabled"
+          }
+        >
+
+      </div>
+
+
+      <div
+        id="bibleReferenceList"
+        class="bible-reference-list"
+      ></div>
+
+
+      ${
+        !state.verseClueOpened
+
+          ? `
+            <div class="bible-search-empty">
+
+              <small>
+                BELUM ADA PENCARIAN
+              </small>
+
+              <p>
+                Cari referensi dari pesan
+                atau catatan terlebih dahulu.
+              </p>
+
+            </div>
+          `
+
+          : `
+            <div class="bible-search-note">
+              REFERENSI TERAKHIR
+            </div>
+          `
+      }
+    `;
+
 
     if (
-      state.bibleSolved
+      !state.verseClueOpened
     ) {
-
-      root.innerHTML = `
-        <div class="bible-reader-head">
-
-          <small>
-            LUKAS 15
-          </small>
-
-          <h2>
-            Ayat selesai diperbaiki.
-          </h2>
-
-          <p>
-            Kamu sudah membaca bagian
-            yang Felicia maksud.
-          </p>
-
-        </div>
-
-
-        <button
-          id="backToMessages"
-          class="primary-btn"
-          type="button"
-        >
-          Kembali ke Messages
-        </button>
-      `;
-
-
-      $("#backToMessages", root)
-        .addEventListener(
-          "click",
-          () => {
-
-            openApp(
-              "messages"
-            );
-          }
-        );
-
 
       return;
     }
 
 
+    const search =
+      $("#bibleSearch", root);
 
-    /* ===============================
-       CURRENT VERSE
-    =============================== */
+
+    const list =
+      $("#bibleReferenceList", root);
+
+
+
+    function drawReferences(
+      query = ""
+    ) {
+
+      const normalized =
+        query
+          .trim()
+          .toLowerCase();
+
+
+      const filtered =
+        references.filter(
+          reference =>
+
+            reference.title
+              .toLowerCase()
+              .includes(
+                normalized
+              )
+        );
+
+
+      list.innerHTML =
+        "";
+
+
+      if (
+        filtered.length === 0
+      ) {
+
+        list.innerHTML = `
+          <div class="bible-no-results">
+            Tidak ada hasil.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      filtered.forEach(
+        reference => {
+
+          const button =
+            document.createElement(
+              "button"
+            );
+
+
+          button.type =
+            "button";
+
+
+          button.className =
+            "bible-reference-row";
+
+
+          button.innerHTML = `
+            <div>
+
+              <strong>
+                ${reference.title}
+              </strong>
+
+              <small>
+                ${reference.meta}
+              </small>
+
+            </div>
+
+            <span>
+              ›
+            </span>
+          `;
+
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              if (
+                reference.id ===
+                "lukas"
+              ) {
+
+                showPuzzle();
+
+                return;
+              }
+
+
+              showOtherReference(
+                reference
+              );
+            }
+          );
+
+
+          list.appendChild(
+            button
+          );
+        }
+      );
+    }
+
+
+    search.addEventListener(
+      "input",
+      () => {
+
+        drawReferences(
+          search.value
+        );
+      }
+    );
+
+
+    drawReferences();
+  }
+
+
+
+  /* =========================================================
+     OTHER REFERENCES
+  ========================================================= */
+
+  function showOtherReference(
+    reference
+  ) {
+
+    root.innerHTML = `
+      <button
+        id="backBibleSearch"
+        class="message-back"
+        type="button"
+      >
+        ‹ Search
+      </button>
+
+
+      <div class="bible-reader-head">
+
+        <small>
+          BIBLE
+        </small>
+
+        <h2>
+          ${reference.title}
+        </h2>
+
+        <p>
+          ${reference.meta}
+        </p>
+
+      </div>
+
+
+      <div class="bible-reference-page">
+
+        <small>
+          REFERENSI
+        </small>
+
+        <p>
+          Bagian ini tidak termasuk
+          referensi yang sedang dicari.
+        </p>
+
+      </div>
+    `;
+
+
+    $("#backBibleSearch", root)
+      .addEventListener(
+        "click",
+        showSearch
+      );
+  }
+
+
+
+  /* =========================================================
+     LUKAS PUZZLE
+  ========================================================= */
+
+  function showPuzzle() {
 
     const verse =
       verses[
@@ -2366,6 +2640,15 @@
 
 
     root.innerHTML = `
+      <button
+        id="backBibleSearch"
+        class="message-back"
+        type="button"
+      >
+        ‹ Search
+      </button>
+
+
       <div class="bible-reader-head">
 
         <small>
@@ -2476,6 +2759,13 @@
     `;
 
 
+    $("#backBibleSearch", root)
+      .addEventListener(
+        "click",
+        showSearch
+      );
+
+
     const selectedRoot =
       $("#selectedPieces", root);
 
@@ -2486,6 +2776,7 @@
 
     const feedback =
       $("#verseFeedback", root);
+
 
 
     function draw() {
@@ -2558,6 +2849,7 @@
       );
 
 
+
       remaining.forEach(
         (
           text,
@@ -2614,6 +2906,7 @@
     }
 
 
+
     $("#resetVerse", root)
       .addEventListener(
         "click",
@@ -2636,6 +2929,7 @@
           draw();
         }
       );
+
 
 
     $("#checkVerse", root)
@@ -2662,6 +2956,7 @@
                 text,
                 index
               ) =>
+
                 text ===
                 verse.pieces[index]
             );
@@ -2753,9 +3048,7 @@
           }
 
 
-          renderBible(
-            root
-          );
+          showPuzzle();
         }
       );
 
@@ -2764,6 +3057,9 @@
   }
 
 
+
+  showSearch();
+}
 
   /* =========================================================
      ARCADE
