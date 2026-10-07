@@ -1338,37 +1338,78 @@ button{
 /* IMPORTANT CHAT CLUE */
 
 .clue-pulse{
+  position:relative;
   cursor:pointer;
+  padding-right:42px;
+  border:2px solid #b89d62;
+  background:#514737!important;
+  box-shadow:0 0 0 2px rgba(184,157,98,.12);
+  animation:cluePulse .9s ease-in-out infinite;
+}
 
-  border-left:2px solid #b89d62;
-
-  animation:
-    cluePulse 1.15s
-    ease-in-out infinite;
+.clue-tap-hint{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  padding:3px 4px;
+  border:1px solid rgba(221,195,131,.65);
+  background:#2d2922;
+  color:#dbc27f;
+  font-size:6px;
+  font-weight:800;
+  letter-spacing:.12em;
+  line-height:1;
 }
 
 @keyframes cluePulse{
-
-  0%,
-  100%{
-    background:#3c3933;
-
-    box-shadow:
-      0 0 0
-      rgba(184,157,98,0);
+  0%,100%{
+    box-shadow:0 0 0 2px rgba(184,157,98,.12), 0 0 6px rgba(184,157,98,.18);
   }
-
   50%{
-    background:#4b4437;
-
-    box-shadow:
-      0 0 14px
-      rgba(184,157,98,.42);
+    background:#65563e!important;
+    box-shadow:0 0 0 3px rgba(184,157,98,.28), 0 0 20px rgba(184,157,98,.62);
   }
 }
 
 .clue-opened{
   border-left:2px solid #70644d;
+}
+
+/* FLOW GUIDES */
+
+.guide-pulse .icon-box{
+  animation:guideIconPulse 1s ease-in-out infinite;
+  outline:2px solid rgba(184,157,98,.55);
+  outline-offset:3px;
+}
+
+@keyframes guideIconPulse{
+  0%,100%{
+    transform:scale(1);
+    box-shadow:inset 0 1px rgba(255,255,255,.055), 0 0 0 rgba(184,157,98,0);
+  }
+  50%{
+    transform:scale(1.06);
+    box-shadow:inset 0 1px rgba(255,255,255,.055), 0 0 16px rgba(184,157,98,.5);
+  }
+}
+
+.guide-thread{
+  background:rgba(184,157,98,.07);
+  border-left:2px solid #b89d62;
+  padding-left:8px;
+}
+
+.guide-thread::after{
+  content:"OPEN";
+  position:absolute;
+  right:16px;
+  bottom:6px;
+  color:#b89d62;
+  font-size:6px;
+  font-weight:800;
+  letter-spacing:.12em;
 }
 
 /* NEW OBJECTIVE POPUP */
@@ -2288,4 +2329,18 @@ button{
 
 .gallery-viewer-bottom button:disabled{
   opacity:.2;
+}
+
+
+/* FEEDBACK BOOST */
+.toast{
+  z-index:700;
+  left:18px;
+  right:18px;
+  bottom:22px;
+  border:1px solid #6b6048;
+  background:#332f27;
+  color:#f2eadc;
+  font-weight:650;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
 }

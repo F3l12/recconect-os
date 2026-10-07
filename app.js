@@ -20,6 +20,8 @@
     unlockedAt: null,
     gameTicker: null,
     timerExpiredNotified: false,
+    messagesOpened: false,
+    feliciaOpened: false,
 
     bibleSolved: false,
     bibleStep: 0,
@@ -89,6 +91,100 @@
       },
       2200
     );
+  }
+
+
+  function playSfx(kind = "tap") {
+
+    const AudioCtx =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioCtx) {
+      return;
+    }
+
+    if (!playSfx.ctx) {
+      playSfx.ctx =
+        new AudioCtx();
+    }
+
+    const ctx =
+      playSfx.ctx;
+
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+
+    const notes = {
+      tap: [420],
+      good: [620, 820],
+      bad: [190],
+      success: [520, 680, 900]
+    }[kind] || [420];
+
+    notes.forEach(
+      (frequency, index) => {
+
+        const osc =
+          ctx.createOscillator();
+
+        const gain =
+          ctx.createGain();
+
+        const start =
+          ctx.currentTime +
+          index * 0.08;
+
+        osc.type =
+          "sine";
+
+        osc.frequency.value =
+          frequency;
+
+        gain.gain.setValueAtTime(
+          0.0001,
+          start
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.045,
+          start + 0.01
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          start + 0.12
+        );
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(start);
+        osc.stop(start + 0.14);
+      }
+    );
+  }
+
+
+  function actionFeedback(
+    message,
+    kind = "tap"
+  ) {
+
+    toast(message);
+    playSfx(kind);
+
+    if (
+      navigator.vibrate
+    ) {
+
+      navigator.vibrate(
+        kind === "bad"
+          ? [35, 35, 35]
+          : 35
+      );
+    }
   }
 
 
@@ -670,6 +766,34 @@
       root
     );
 
+    if (
+      name === "messages" &&
+      !state.verseClueOpened
+    ) {
+
+      state.messagesOpened =
+        true;
+
+      const objective =
+        $("#objectiveText");
+
+      if (objective) {
+        objective.textContent =
+          "Buka chat Felicia.";
+      }
+
+      document
+        .querySelectorAll(
+          '[data-app="messages"]'
+        )
+        .forEach(
+          button =>
+            button.classList.remove(
+              "guide-pulse"
+            )
+        );
+    }
+
     const appScreen =
       $("#appScreen");
 
@@ -1009,7 +1133,7 @@
 
           [
             "me",
-            "apaan"
+            "apaan jir"
           ],
 
           [
@@ -1262,6 +1386,17 @@
             );
 
 
+          if (
+            id === "felicia" &&
+            !state.verseClueOpened
+          ) {
+
+            row.classList.add(
+              "guide-thread"
+            );
+          }
+
+
           row.innerHTML = `
             <div class="thread-avatar">
               ${chat.name[0]}
@@ -1329,6 +1464,31 @@
 
       const chat =
         chats[id];
+
+
+      if (
+        id === "felicia" &&
+        !state.verseClueOpened
+      ) {
+
+        const objective =
+          $("#objectiveText");
+
+        if (objective) {
+          objective.textContent =
+            "Cari referensi ayat di chat Felicia.";
+        }
+
+        if (!state.feliciaOpened) {
+
+          state.feliciaOpened =
+            true;
+
+          showObjectivePopup(
+            "Cari referensi ayat di chat Felicia."
+          );
+        }
+      }
 
 
       $("#appTitle")
@@ -1429,6 +1589,28 @@
 
 
           if (
+            isVerseClue &&
+            !state.verseClueOpened
+          ) {
+
+            const tapHint =
+              document.createElement(
+                "span"
+              );
+
+            tapHint.className =
+              "clue-tap-hint";
+
+            tapHint.textContent =
+              "TAP";
+
+            bubble.appendChild(
+              tapHint
+            );
+          }
+
+
+          if (
             isVerseClue
           ) {
 
@@ -1472,6 +1654,11 @@
 
                 showObjectivePopup(
                   "Baca Lukas 15:21–22 dan 24."
+                );
+
+                actionFeedback(
+                  "Referensi ditemukan — buka Bible.",
+                  "good"
                 );
               }
             );
@@ -1730,6 +1917,11 @@
 
                 area.prepend(
                   reply
+                );
+
+                actionFeedback(
+                  "Belum tepat.",
+                  "bad"
                 );
               }
             }
@@ -2710,11 +2902,24 @@ function renderGallery(root) {
                 "lukas"
               ) {
 
-                showPuzzle();
+                actionFeedback(
+                  "Referensi cocok.",
+                  "good"
+                );
+
+                setTimeout(
+                  showPuzzle,
+                  220
+                );
 
                 return;
               }
 
+
+              actionFeedback(
+                "Bukan referensi yang Felicia maksud.",
+                "bad"
+              );
 
               showOtherReference(
                 reference
@@ -2816,6 +3021,10 @@ function renderGallery(root) {
       shuffle(
         verse.pieces
       );
+
+
+    let verseLocked =
+      false;
 
 
     root.innerHTML = `
@@ -3116,6 +3325,11 @@ function renderGallery(root) {
         "click",
         () => {
 
+          if (verseLocked) {
+            return;
+          }
+
+
           if (
             selected.length !==
             verse.pieces.length
@@ -3124,6 +3338,10 @@ function renderGallery(root) {
             feedback.textContent =
               "Masih ada potongan yang belum dipakai.";
 
+            actionFeedback(
+              "Masih ada potongan yang belum dipakai.",
+              "bad"
+            );
 
             return;
           }
@@ -3148,10 +3366,22 @@ function renderGallery(root) {
             feedback.textContent =
               "Urutannya belum tepat. Cocokkan lagi dengan Alkitab.";
 
+            actionFeedback(
+              "Urutannya belum tepat.",
+              "bad"
+            );
 
             return;
           }
 
+
+          verseLocked =
+            true;
+
+          actionFeedback(
+            `Lukas 15:${verse.number} benar.`,
+            "good"
+          );
 
           state.bibleStep++;
 
@@ -3180,6 +3410,10 @@ function renderGallery(root) {
 
             showObjectivePopup(
               "Balik ke chat Felicia."
+            );
+
+            playSfx(
+              "success"
             );
 
 
