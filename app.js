@@ -1133,7 +1133,7 @@
 
           [
             "me",
-            "apaan jir"
+            "apaan"
           ],
 
           [
